@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import type { Project } from "@/types";
 import SectionBlock from "@/components/ui/SectionBlock";
 import StatusBadge from "@/components/ui/StatusBadge";
@@ -10,17 +10,17 @@ type Props = {
   project: Project;
 };
 
-const page = {
+const page: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.1 } },
 };
 
-const section = {
+const section: Variants = {
   hidden: { opacity: 0, y: 16 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] } },
 };
 
-const featureList = {
+const featureList: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.08 } },
 };

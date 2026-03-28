@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { motion, type Variants } from "framer-motion";
 import type { Feature } from "@/types";
 import StatusBadge from "@/components/ui/StatusBadge";
 
@@ -12,9 +12,9 @@ type Props = {
 
 const MotionLink = motion(Link);
 
-const card = {
+const card: Variants = {
   hidden: { opacity: 0, y: 16 },
-  show:   { opacity: 1, y: 0, transition: { duration: 0.3, ease: "easeOut" } },
+  show:   { opacity: 1, y: 0, transition: { duration: 0.3, ease: [0.25, 0.1, 0.25, 1] } },
 };
 
 export default function FeatureCard({ feature, projectId }: Props) {
