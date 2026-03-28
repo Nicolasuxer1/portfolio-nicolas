@@ -2,22 +2,106 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ─── Design tokens ────────────────────────────────────────────────────────
+   Stored as raw RGB channels ("R G B") so Tailwind opacity modifiers work:
+   bg-canvas/90 → rgb(var(--canvas) / 0.9)
+   ─────────────────────────────────────────────────────────────────────── */
+
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg-hover: rgb(255 255 255 / 0.09);
+
+  /* Badge colors */
+  --badge-green-bg:   rgb(5 46 22);
+  --badge-green-text: rgb(52 211 153);
+  --badge-green-dot:  rgb(52 211 153);
+  --badge-blue-bg:    rgb(8 27 67);
+  --badge-blue-text:  rgb(96 165 250);
+  --badge-blue-dot:   rgb(96 165 250);
+  --badge-amber-bg:   rgb(69 26 3);
+  --badge-amber-text: rgb(251 191 36);
+  --badge-amber-dot:  rgb(251 191 36);
+  --badge-zinc-bg:    rgb(39 39 42);
+  --badge-zinc-text:  rgb(161 161 170);
+  --badge-zinc-dot:   rgb(161 161 170);
+
+  --canvas:          8 8 9;
+  --surface:         17 17 19;
+  --surface-raised:  24 24 27;
+  --surface-overlay: 31 31 35;
+
+  --border:        34 34 38;
+  --border-subtle: 26 26 30;
+  --border-strong: 46 46 52;
+
+  --text-primary:   237 237 238;
+  --text-secondary: 161 161 170;
+  --text-muted:     82 82 91;
+  --text-disabled:  63 63 70;
+
+  --accent:      139 124 248;
+  --accent-soft: 42 37 80;
+  --accent-fg:   196 181 253;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+[data-theme="light"] {
+  color-scheme: light;
+
+  --bg-hover: rgb(0 0 0 / 0.06);
+
+  /* Badge colors */
+  --badge-green-bg:   rgb(220 252 231);
+  --badge-green-text: rgb(4 120 87);
+  --badge-green-dot:  rgb(16 185 129);
+  --badge-blue-bg:    rgb(219 234 254);
+  --badge-blue-text:  rgb(29 78 216);
+  --badge-blue-dot:   rgb(59 130 246);
+  --badge-amber-bg:   rgb(254 243 199);
+  --badge-amber-text: rgb(180 83 9);
+  --badge-amber-dot:  rgb(245 158 11);
+  --badge-zinc-bg:    rgb(244 244 245);
+  --badge-zinc-text:  rgb(82 82 91);
+  --badge-zinc-dot:   rgb(113 113 122);
+
+  --canvas:          255 255 255;
+  --surface:         249 249 249;
+  --surface-raised:  242 242 242;
+  --surface-overlay: 235 235 235;
+
+  --border:        229 229 229;
+  --border-subtle: 240 240 240;
+  --border-strong: 212 212 212;
+
+  --text-primary:   9 9 11;
+  --text-secondary: 113 113 122;
+  --text-muted:     161 161 170;
+  --text-disabled:  212 212 212;
+
+  --accent:      109 92 232;
+  --accent-soft: 237 233 254;
+  --accent-fg:   76 61 184;
+}
+
+@layer base {
+  html {
+    background-color: rgb(var(--canvas));
+    scroll-behavior: smooth;
   }
-}
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  body {
+    @apply bg-canvas text-text-primary font-sans antialiased;
+  }
+
+  *:focus-visible {
+    @apply outline-none ring-2 ring-accent ring-offset-2 ring-offset-canvas;
+  }
+
+  ::selection {
+    background-color: rgb(var(--accent-soft));
+    color: rgb(var(--accent-fg));
+  }
 }
 
 @layer utilities {
