@@ -13,8 +13,8 @@ export default function ProjectCard({ project }: Props) {
       href={`/projects/${project.id}`}
       className="group flex flex-col overflow-hidden rounded-xl bg-surface ring-1 ring-border transition-all duration-200 hover:bg-surface-raised hover:ring-border-strong"
     >
-      {/* Square cover image */}
-      <div className="relative aspect-square w-full overflow-hidden bg-surface-overlay">
+      {/* Cover image — 16:9 */}
+      <div className="relative aspect-video w-full overflow-hidden bg-surface-overlay">
         <Image
           src={project.coverImage}
           alt={project.title}

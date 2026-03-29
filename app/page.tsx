@@ -2,6 +2,7 @@ import Hero from "@/components/Hero";
 import ProjectCard from "@/components/ProjectCard";
 import SectionBlock from "@/components/ui/SectionBlock";
 import AboutSection from "@/components/AboutSection";
+import ExperienceSection from "@/components/ExperienceSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import { projects } from "@/data/projects";
@@ -40,6 +41,11 @@ export default function Home() {
         {/* ── About ──────────────────────────────────── */}
         <section id="about" className="mx-auto max-w-4xl px-6 pb-28">
           <AboutSection />
+        </section>
+
+        {/* ── Experience ─────────────────────────────── */}
+        <section id="experience" className="mx-auto max-w-4xl px-6 pb-28">
+          <ExperienceSection />
         </section>
 
         {/* ── Contact ────────────────────────────────── */}
