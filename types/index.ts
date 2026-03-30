@@ -19,4 +19,8 @@ export type Project = {
 
 export type FeatureSection =
   | { type: "text"; title: string; content: string }
-  | { type: "image"; src: string; caption?: string };
+  | { type: "image"; src: string; caption?: string }
+  | { type: "highlight"; content: string }
+  | { type: "metrics"; items: { label: string; value: string }[] }
+  | { type: "quote"; content: string; attribution?: string }
+  | { type: "image-full"; src: string; caption?: string };

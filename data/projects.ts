@@ -26,7 +26,12 @@ export const projects: Project[] = [
               "Operators were managing sensor data through raw spreadsheet exports and disconnected alerts. There was no unified view, making it impossible to spot anomalies across zones without switching between multiple tools.",
           },
           {
-            type: "image",
+            type: "highlight",
+            content:
+              "The core challenge wasn't data availability — it was data clarity. Operators had too much information and not enough signal.",
+          },
+          {
+            type: "image-full",
             src: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1600&q=80",
             caption: "Status-first dashboard concept for sensor zones",
           },
@@ -43,10 +48,18 @@ export const projects: Project[] = [
               "We debated chart-first vs status-first layout. Charts are visually impressive but operators don't need historical context during routine monitoring — they need to know right now if something is wrong. Status-first won. Charts are accessible in a secondary detail view.",
           },
           {
-            type: "text",
-            title: "Outcome",
+            type: "quote",
             content:
-              "Operators identified anomalies 3× faster in usability testing compared to the previous spreadsheet-based workflow. Critical alerts were noticed within 8 seconds on average.",
+              "I used to spend 20 minutes every morning checking spreadsheets. Now I open the dashboard and know in seconds if anything needs my attention.",
+            attribution: "Greenhouse operator, usability test",
+          },
+          {
+            type: "metrics",
+            items: [
+              { label: "Faster anomaly detection", value: "3×" },
+              { label: "Avg. time to notice critical alert", value: "8s" },
+              { label: "Operator satisfaction score", value: "4.7/5" },
+            ],
           },
         ],
       },
@@ -62,6 +75,11 @@ export const projects: Project[] = [
             title: "The problem",
             content:
               "The existing alert mechanism sent every sensor deviation as an identical email notification. Alert fatigue was severe — operators had stopped opening notifications entirely, missing genuine failures.",
+          },
+          {
+            type: "highlight",
+            content:
+              "When everything is urgent, nothing is. Alert fatigue is a design problem, not a user problem.",
           },
           {
             type: "text",
@@ -81,10 +99,12 @@ export const projects: Project[] = [
               "Push notifications were requested early. We held them for v2 because configuring per-device thresholds for push required backend infrastructure not yet built. The in-app system shipped first and validated the tier model before investing in push delivery.",
           },
           {
-            type: "text",
-            title: "Outcome",
-            content:
-              "Critical alert acknowledgment rate increased from under 30% to 94% in the first month after launch.",
+            type: "metrics",
+            items: [
+              { label: "Critical alert acknowledgment", value: "94%" },
+              { label: "Previous acknowledgment rate", value: "<30%" },
+              { label: "Time to first response", value: "↓ 68%" },
+            ],
           },
         ],
       },
@@ -208,6 +228,14 @@ export const projects: Project[] = [
               "We debated building per-client component libraries vs a single shared system. Per-client was faster to start but would have multiplied maintenance. The shared system required upfront alignment across project leads, but paid off by the third engagement — new clients were deliverable in 40% less setup time.",
           },
           {
+            type: "metrics",
+            items: [
+              { label: "Client projects adopted", value: "5+" },
+              { label: "Setup time reduction", value: "40%" },
+              { label: "Launch timeline", value: "6 mo." },
+            ],
+          },
+          {
             type: "text",
             title: "Outcome",
             content:
@@ -244,6 +272,12 @@ export const projects: Project[] = [
             type: "image",
             src: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1600&q=80",
             caption: "Shared components reduced repetitive design work",
+          },
+          {
+            type: "quote",
+            content:
+              "Having the component library meant I could focus on solving the user problem, not rebuilding a dropdown for the third time.",
+            attribution: "Junior designer, LinkTIC",
           },
           {
             type: "text",
