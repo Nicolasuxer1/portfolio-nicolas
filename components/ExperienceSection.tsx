@@ -6,20 +6,20 @@ import SectionBlock from "@/components/ui/SectionBlock";
 const experiences = [
   {
     company: "Greenspec",
-    role: "Senior Product Designer",
-    period: "2023 – Present",
-    location: "Bogotá, Colombia · Remote",
+    role: "Product Designer",
+    period: "2025 – Present",
+    location: "Netherlands · Remote",
     description:
-      "Leading product design for a greenhouse automation platform used across South America. Designed a modular IoT dashboard that reduced operator error by 40%, built the component library from scratch, and worked directly with engineering to define API contracts for real-time sensor data.",
+      "Leading product SaaS for a greenhouse automation platform used in South America and Europe. Designed a modular IoT dashboard that reduced operator error by 40%, built the component library from scratch, and worked directly with engineering to define API calls for real-time sensor data.",
     tags: ["IoT", "SaaS", "Design System", "B2B"],
   },
   {
     company: "LinkTIC",
     role: "Product Designer",
-    period: "2021 – 2023",
+    period: "2021 – 2024",
     location: "Bogotá, Colombia",
     description:
-      "Owned the design system for a suite of government-grade enterprise tools serving 10k+ public employees. Standardised 80+ components across 6 product teams, established design-to-dev handoff conventions, and ran usability testing cycles that directly shaped roadmap priorities.",
+      "Designed and delivered digital platforms for government and enterprise clients (IDEAM, Acueducto de Bogotá, Findeter, Fiscalía, Positiva), working across complex regulatory and operational contexts. Led the creation of a scalable design system to improve consistency, reduce design debt, and enable faster iteration across teams.",
     tags: ["Enterprise", "Design System", "Government", "Accessibility"],
   },
   {
@@ -28,7 +28,7 @@ const experiences = [
     period: "2020 – 2021",
     location: "Remote",
     description:
-      "Designed end-to-end flows for early-stage SaaS products across fintech and logistics verticals. Worked in fast 2-week cycles, validated concepts with guerrilla testing, and shipped high-fidelity prototypes directly to development.",
+      "UX/UI designer leading the requirements gathering process for the design and development of an electronic invoicing prototype based on blockchain technology.",
     tags: ["Startup", "Fintech", "Logistics", "Prototyping"],
   },
 ];

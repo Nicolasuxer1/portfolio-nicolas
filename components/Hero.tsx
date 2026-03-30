@@ -31,7 +31,7 @@ export default function Hero() {
             width: "70vw",
             height: "80vh",
             background:
-              "radial-gradient(ellipse at center, rgba(110, 86, 235, 0.55) 0%, rgba(110, 86, 235, 0.15) 40%, transparent 70%)",
+              "radial-gradient(ellipse at center, rgba(70, 33, 255, 0.55) 30%, rgba(70, 43, 208, 0.15) 70%, transparent 70%)",
             filter: "blur(80px)",
           }}
         />
@@ -44,8 +44,8 @@ export default function Hero() {
             width: "60vw",
             height: "65vh",
             background:
-              "radial-gradient(ellipse at center, rgba(50, 90, 210, 0.45) 0%, rgba(50, 90, 210, 0.12) 40%, transparent 70%)",
-            filter: "blur(100px)",
+              "radial-gradient(ellipse at center, rgba(50, 90, 210, 0.45) 0%, rgba(50, 90, 210, 0.12) 70%, transparent 70%)",
+            filter: "blur(80px)",
           }}
         />
         {/* Orb 3 — violet, upper-left — tertiary warmth */}
@@ -57,7 +57,7 @@ export default function Hero() {
             width: "45vw",
             height: "55vh",
             background:
-              "radial-gradient(ellipse at center, rgba(140, 60, 200, 0.35) 0%, rgba(140, 60, 200, 0.08) 40%, transparent 70%)",
+              "radial-gradient(ellipse at center, rgba(140, 60, 200, 0.35) 20%, rgba(140, 60, 200, 0.08) 40%, transparent 70%)",
             filter: "blur(72px)",
           }}
         />
@@ -81,7 +81,7 @@ export default function Hero() {
           <motion.div variants={item}>
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-surface/80 px-3 py-1.5 text-xs font-medium text-text-secondary backdrop-blur-sm">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse-dot" />
-              Available for new opportunities
+              OPEN TO WORK
             </span>
           </motion.div>
 
@@ -91,8 +91,8 @@ export default function Hero() {
             className="max-w-2xl text-balance text-4xl font-semibold leading-tight tracking-tight text-text-primary sm:text-5xl"
           >
             Design that{" "}
-            <span className="italic text-accent">ships</span>
-            , not just
+            <span className="italic text-accent">ships, </span>
+            not just
             <br />impresses.
           </motion.h1>
 

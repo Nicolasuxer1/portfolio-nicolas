@@ -34,7 +34,7 @@ export default function ContactSection() {
             vargas.dvisual@gmail.com
           </a>
           <a
-            href="https://linkedin.com/in/nicolasvargas"
+            href="https://www.linkedin.com/in/nicolas-vargas-galindo/"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center rounded-md border border-border px-4 py-2.5 text-sm font-medium text-text-secondary transition-colors hover:bg-nav-hover hover:text-text-primary"

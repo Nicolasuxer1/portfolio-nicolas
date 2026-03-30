@@ -15,7 +15,7 @@ export default function Home() {
         <Hero />
 
         {/* ── Selected Work ──────────────────────────── */}
-        <section id="work" className="mx-auto max-w-4xl px-6 pb-28">
+        <section id="work" className="mx-auto max-w-4xl px-6 pb-28 pt-28">
           <SectionBlock title="Selected Work">
             <div className="flex flex-col gap-6">
               <div>

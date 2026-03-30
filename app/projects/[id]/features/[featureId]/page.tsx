@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { projects } from "@/data/projects";
-import SectionBlock from "@/components/ui/SectionBlock";
+import FeatureSectionRenderer from "@/components/FeatureSectionRenderer";
 import StatusBadge from "@/components/ui/StatusBadge";
 
 type Props = {
@@ -57,35 +57,12 @@ export default function FeaturePage({ params }: Props) {
           </p>
         </header>
 
-        {/* Problem */}
-        <SectionBlock title="Problem">
-          <p className="max-w-2xl text-sm leading-relaxed text-text-secondary">
-            {feature.problem}
-          </p>
-        </SectionBlock>
-
-        {/* Solution */}
-        <SectionBlock title="Solution">
-          <p className="max-w-2xl text-sm leading-relaxed text-text-secondary">
-            {feature.solution}
-          </p>
-        </SectionBlock>
-
-        {/* Decisions */}
-        <SectionBlock title="Decisions">
-          <p className="max-w-2xl text-sm leading-relaxed text-text-secondary">
-            {feature.decisions}
-          </p>
-        </SectionBlock>
-
-        {/* Outcome — optional */}
-        {feature.outcome && (
-          <SectionBlock title="Outcome">
-            <p className="max-w-2xl text-sm leading-relaxed text-text-secondary">
-              {feature.outcome}
-            </p>
-          </SectionBlock>
-        )}
+        {feature.sections.map((section, index) => (
+          <FeatureSectionRenderer
+            key={`${feature.id}-${section.type}-${index}`}
+            section={section}
+          />
+        ))}
 
       </div>
     </main>

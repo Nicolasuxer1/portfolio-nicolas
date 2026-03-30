@@ -9,7 +9,7 @@ export default function Footer() {
               { label: "Work",    href: "#work" },
               { label: "About",   href: "#about" },
               { label: "Contact", href: "#contact" },
-              { label: "Download CV", href: "/cv.pdf", download: true },
+              { label: "Download CV", href: "/public/cv/cv2026.pdf", download: true },
             ].map((link) => (
               <li key={link.label}>
                 <a
