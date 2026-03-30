@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export default function Footer() {
   return (
     <footer className="border-t border-border">
@@ -6,19 +8,18 @@ export default function Footer() {
         <div className="flex flex-wrap items-center justify-between gap-4">
           <ul className="flex items-center gap-5">
             {[
-              { label: "Work",    href: "#work" },
-              { label: "About",   href: "#about" },
-              { label: "Contact", href: "#contact" },
-              { label: "Download CV", href: "/public/cv/cv2026.pdf", download: true },
-            ].map((link) => (
-              <li key={link.label}>
-                <a
-                  href={link.href}
-                  {...(link.download ? { download: true } : {})}
+              { label: "Work",       href: "/#work"       },
+              { label: "About",      href: "/#about"      },
+              { label: "Experience", href: "/#experience" },
+              { label: "Contact",    href: "/#contact"    },
+            ].map(({ label, href }) => (
+              <li key={label}>
+                <Link
+                  href={href}
                   className="text-xs font-medium uppercase tracking-widest text-text-muted transition-colors hover:text-text-primary"
                 >
-                  {link.label}
-                </a>
+                  {label}
+                </Link>
               </li>
             ))}
           </ul>

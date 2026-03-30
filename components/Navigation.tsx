@@ -94,9 +94,16 @@ export default function Navigation() {
 
         {/* Desktop nav — all items on the right */}
         <ul className="hidden md:flex items-center gap-0.5">
-          <li><a href="#work"    className={ghost}>Work</a></li>
-          <li><a href="#about"   className={ghost}>About</a></li>
-          <li><a href="#contact" className={ghost}>Contact</a></li>
+          {[
+            { label: "Work",       href: "/#work"       },
+            { label: "About",      href: "/#about"      },
+            { label: "Experience", href: "/#experience" },
+            { label: "Contact",    href: "/#contact"    },
+          ].map(({ label, href }) => (
+            <li key={label}>
+              <Link href={href} className={ghost}>{label}</Link>
+            </li>
+          ))}
 
           <li className="mx-2 h-4 w-px bg-border" aria-hidden />
 
@@ -152,18 +159,19 @@ export default function Navigation() {
             <div className="mx-auto max-w-4xl px-6 py-4 flex flex-col gap-1">
               {/* Nav links */}
               {[
-                { label: "Work",    href: "#work"    },
-                { label: "About",   href: "#about"   },
-                { label: "Contact", href: "#contact" },
+                { label: "Work",       href: "/#work"       },
+                { label: "About",      href: "/#about"      },
+                { label: "Experience", href: "/#experience" },
+                { label: "Contact",    href: "/#contact"    },
               ].map(({ label, href }) => (
-                <a
+                <Link
                   key={label}
                   href={href}
                   onClick={close}
                   className="flex items-center rounded-lg px-3 py-3 text-base font-medium text-text-secondary transition-colors hover:bg-nav-hover hover:text-text-primary"
                 >
                   {label}
-                </a>
+                </Link>
               ))}
 
               {/* Divider + theme toggle */}
