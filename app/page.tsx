@@ -24,8 +24,7 @@ export default function Home() {
                   <span className="italic text-accent">show the thinking.</span>
                 </h2>
                 <p className="mt-3 max-w-xl text-sm leading-relaxed text-text-secondary">
-                  Not just what was built — but why those decisions were made,
-                  what was traded off, and what shipped.
+                  Not just what was built but why those decisions were made, what was traded off, and what shipped.
                 </p>
               </div>
 

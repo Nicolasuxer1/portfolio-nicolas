@@ -3,64 +3,90 @@ import type { Project } from "@/types";
 export const projects: Project[] = [
   {
     id: "kanut",
-    title: "Kanut — Greenhouse Automation Platform",
+    title: "Client Portal SaaS Platform",
     description:
-      "Designing a modular IoT dashboard system that translates real-time sensor data into operational decisions for greenhouse operators. Focused on system architecture, component logic, and clarity under complexity.",
-    status: "live",
-    coverImage: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=800&q=75",
+      "The Client Portal is a secure web platform that allows distributors and clients to access product information, request quotations, and retrieve account-related documents such as invoices and manuals.",
+    status: "in-progress",
+    coverImage: "/images/client-portal-cover.png",
     context:
-      "Greenspec needed a SaaS platform for greenhouse automation. The challenge: translating raw IoT sensor streams, alerts, and control commands into dashboards that greenhouse operators can actually act on — without an engineering degree. The product had no design foundation; I defined the entire UI architecture from scratch.",
-    role: "UX/UI Designer at Greenspec (2025 – Present) · Netherlands, Remote. Led the full design process: discovery, information architecture, component system, and design-to-dev handoff. Sole designer on a product-focused team scaling from MVP to commercial launch.",
+          `
+      Currently, distributor interactions with Greenspec rely heavily on email, creating friction, slower response times, and limited visibility across requests.
+
+      The Client Portal centralizes these processes into a single platform, enabling distributors to browse products, request quotes, and access their history without manual communication.
+
+      This shift improves transparency, reduces operational workload, and lays the foundation for scalable B2B commerce.
+      `,
+    role: "Led the Product Experience of a B2B Client Portal, defining the product structure, navigation, and design system from the ground up. Worked closely with stakeholders to align user needs, business goals, and technical constraints, delivering features iteratively (authentication, dashboard, and core modules) while ensuring scalability and consistency across the platform.",
     features: [
       {
-        id: "sensor-dashboard",
-        title: "Sensor Monitoring Dashboard",
+        id: "navegation-model",
+        title: "Mental model of navigation",
         description:
-          "The primary operator interface: a real-time overview of all active sensors across greenhouse zones — temperature, humidity, CO₂, light intensity — with status-driven visual hierarchy.",
-        status: "shipped",
+            "Greenspec needed to introduce a B2B client portal inside an existing website without disrupting how users already navigated the platform. This was a challenge because the existing website had a complex navigation structure and a lot of pages. We needed to create a new mental model of navigation for the B2B client portal.",
+        status: "done",
         sections: [
-          {
-            type: "text",
-            title: "The problem",
-            content:
-              "Operators were managing sensor data through raw spreadsheet exports and disconnected alerts. There was no unified view, making it impossible to spot anomalies across zones without switching between multiple tools.",
-          },
           {
             type: "highlight",
             content:
-              "The core challenge wasn't data availability — it was data clarity. Operators had too much information and not enough signal.",
+              "Users were non-technical (people over 50) and had already invested time learning the existing navigation, changing it would introduce unnecessary friction.",
           },
           {
-            type: "image-full",
-            src: "https://images.unsplash.com/photo-1518770660439-4636190af475?w=1600&q=80",
-            caption: "Status-first dashboard concept for sensor zones",
+            type: "list",
+            title: "Problem statement",
+            items: [
+              "User familiarity (existing website navigation already learned)",
+              "Product needs (introducing operational modules: Quotes, Orders, Invoices) ",
+              "Technical constraints (small dev team, need for scalable solutions)",
+            ],
+          },
+          {
+            type: "image",
+            src: "/images/client-portal-feat-1.png",
+            caption: "We explored three quick prototyping approaches: Using a existed UI, I made a fully separate portal, a full sidebar integration, and a conditional sidebar (appear only when the user is logged in). Each introduced trade-offs between usability, complexity, and development cost.",
           },
           {
             type: "text",
-            title: "The solution",
+            title: "Technical considerations",
             content:
-              "A zoned dashboard with a card-per-sensor layout, where card state (normal, warning, critical) drives color and prominence. Operators see the full picture in one view and drill down only when a zone demands attention.",
+              "Limited development resources made a full portal rebuild impractical it would increase complexity, slow down delivery, and add long-term maintenance overhead. The solution needed to be incremental, non-disruptive, and compatible with the existing architecture.",
           },
           {
             type: "text",
-            title: "Key decisions",
+            title: "Solution",
             content:
-              "We debated chart-first vs status-first layout. Charts are visually impressive but operators don't need historical context during routine monitoring — they need to know right now if something is wrong. Status-first won. Charts are accessible in a secondary detail view.",
+              "Introduce portal functionality as a lightweight, persistent layer without disrupting the existing navigation system. ",
           },
           {
-            type: "quote",
+            type: "image",
+            src: "/images/client-portal-feat-1-1.png",
+            caption: "The final solution introduces a hybrid navigation model: the top navbar remains unchanged to preserve existing user familiarity, while a minimal, icon-only sidebar provides access to portal features. The sidebar stays collapsed by default and expands on hover, allowing users to navigate operational modules like Dashboard, Quotes, Orders, and Invoices without disrupting their established workflow.",
+          },
+          {
+            type: "text",
+            title: "Responsive adaptation",
             content:
-              "I used to spend 20 minutes every morning checking spreadsheets. Now I open the dashboard and know in seconds if anything needs my attention.",
-            attribution: "Greenhouse operator, usability test",
+              "On mobile, the navigation adapts to a bottom bar pattern with 4–5 primary actions, giving direct access to core portal modules like Dashboard, Quotes, Orders, Invoices, and Account. Website navigation is moved into the hamburger menu, separating concerns between browsing and operational tasks. ",
+          },
+          {
+            type: "image",
+            src: "/images/client-portal-feat-1-1.png",
+            caption: "The final solution introduces a hybrid navigation model: the top navbar remains unchanged to preserve existing user familiarity, while a minimal, icon-only sidebar provides access to portal features. The sidebar stays collapsed by default and expands on hover, allowing users to navigate operational modules like Dashboard, Quotes, Orders, and Invoices without disrupting their established workflow.",
           },
           {
             type: "metrics",
             items: [
-              { label: "Faster anomaly detection", value: "3×" },
-              { label: "Avg. time to notice critical alert", value: "8s" },
-              { label: "Operator satisfaction score", value: "4.7/5" },
+              { label: "Navegation disruption", value: "0 relearning required" },
+              { label: "Implementation", value: "3 weeks faster" },
+              { label: "Cognitive load", value: "Reduced by 60%" },
             ],
           },
+          {
+            type: "quote",
+            content:
+              "This new way of navigating was easy to get used to; I don't feel like I'm in two different places, and I can see everything in one place.",
+            attribution: "Greenhouse distributor, usability test",
+          },
+          
         ],
       },
       {
@@ -68,7 +94,7 @@ export const projects: Project[] = [
         title: "Alert & Notification System",
         description:
           "A tiered alert system that separates informational updates from actionable warnings and critical failures, with configurable thresholds per sensor per zone.",
-        status: "shipped",
+        status: "to-do",
         sections: [
           {
             type: "text",
@@ -113,7 +139,7 @@ export const projects: Project[] = [
         title: "Actuator Control Interface",
         description:
           "A command panel for controlling greenhouse actuators — ventilation, irrigation, heating — directly from the dashboard, with confirmation flows for high-impact actions.",
-        status: "shipped",
+        status: "to-do",
         sections: [
           {
             type: "text",
@@ -151,7 +177,7 @@ export const projects: Project[] = [
         title: "Component System & Design Tokens",
         description:
           "A foundational design system built from scratch: semantic color tokens, a sensor-state color language, and a reusable component library aligned to the engineering stack.",
-        status: "shipped",
+        status: "to-do",
         sections: [
           {
             type: "text",

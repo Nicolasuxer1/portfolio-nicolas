@@ -2,7 +2,7 @@ export type Feature = {
   id: string;
   title: string;
   description: string;
-  status: "shipped" | "iteration" | "concept";
+  status: "shipped" | "iteration" | "concept" | "done" | "to-do";
   sections: FeatureSection[];
 };
 
@@ -23,4 +23,5 @@ export type FeatureSection =
   | { type: "highlight"; content: string }
   | { type: "metrics"; items: { label: string; value: string }[] }
   | { type: "quote"; content: string; attribution?: string }
-  | { type: "image-full"; src: string; caption?: string };
+  | { type: "image-full"; src: string; caption?: string }
+  | { type: "list"; title: string; items: string[] };

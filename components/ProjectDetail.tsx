@@ -37,7 +37,7 @@ export default function ProjectDetail({ project }: Props) {
         {/* Header */}
         <motion.header
           variants={section}
-          className="flex flex-col gap-5 border-b border-border pb-10"
+          className="flex flex-col gap-5"
         >
           <div className="flex flex-wrap items-start gap-3">
             <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-text-primary sm:text-5xl">
@@ -53,7 +53,7 @@ export default function ProjectDetail({ project }: Props) {
         {/* Context */}
         <motion.div variants={section}>
           <SectionBlock title="Context">
-            <p className="max-w-2xl text-sm leading-relaxed text-text-secondary">
+            <p className="max-w-2xl whitespace-pre-line text-sm leading-relaxed text-text-secondary">
               {project.context}
             </p>
           </SectionBlock>

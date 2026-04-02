@@ -79,6 +79,27 @@ export default function FeatureSectionRenderer({ section }: Props) {
     );
   }
 
+  // ── list ──────────────────────────────────────────────────────────────────
+  if (section.type === "list") {
+    return (
+      <SectionBlock title={section.title}>
+        <ul className="flex flex-col gap-2.5">
+          {section.items.map((item) => (
+            <li key={item} className="flex items-start gap-3">
+              <span
+                aria-hidden
+                className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full bg-accent"
+              />
+              <span className="text-sm leading-relaxed text-text-secondary">
+                {item}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </SectionBlock>
+    );
+  }
+
   // ── image-full ────────────────────────────────────────────────────────────
   if (section.type === "image-full") {
     return (
@@ -88,7 +109,7 @@ export default function FeatureSectionRenderer({ section }: Props) {
             src={section.src}
             alt={section.caption ?? "Feature image"}
             fill
-            sizes="(min-width: 1024px) 896px, (min-width: 768px) 90vw, 100vw"
+            sizes="(min-width: 1024px) px, (min-width: 768px) 90vw, 100vw"
             className="object-cover"
           />
         </div>

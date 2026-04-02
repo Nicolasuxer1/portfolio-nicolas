@@ -2,6 +2,7 @@ type Status =
   | "shipped"
   | "iteration"
   | "concept"
+  | "to-do"
   | "live"
   | "in-progress"
   | "done";
@@ -15,15 +16,17 @@ const colorMap: Record<Status, BadgeVars> = {
   done:          { bg: "var(--badge-green-bg)",  text: "var(--badge-green-text)",  dot: "var(--badge-green-dot)"  },
   iteration:     { bg: "var(--badge-amber-bg)",  text: "var(--badge-amber-text)",  dot: "var(--badge-amber-dot)"  },
   concept:       { bg: "var(--badge-zinc-bg)",   text: "var(--badge-zinc-text)",   dot: "var(--badge-zinc-dot)"   },
+  "to-do":       { bg: "var(--badge-zinc-bg)",   text: "var(--badge-zinc-text)",   dot: "var(--badge-zinc-dot)"   },
 };
 
 const labels: Record<Status, string> = {
   shipped:       "SHIPPED",
-  live:          "DONE",
+  live:          "LIVE",
   "in-progress": "IN PROGRESS",
   done:          "DONE",
   iteration:     "ITERATION",
   concept:       "CONCEPT",
+  "to-do":       "TO-DO",
 };
 
 type Props = {
