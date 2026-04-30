@@ -6,8 +6,12 @@ type Props = {
   params: { id: string };
 };
 
+const CUSTOM_PAGES = new Set(["dropi"]);
+
 export function generateStaticParams() {
-  return projects.map((project) => ({ id: project.id }));
+  return projects
+    .filter((p) => !CUSTOM_PAGES.has(p.id))
+    .map((project) => ({ id: project.id }));
 }
 
 export function generateMetadata({ params }: Props) {
