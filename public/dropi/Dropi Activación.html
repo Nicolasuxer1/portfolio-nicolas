@@ -1,0 +1,2058 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dropi — Activación de Marca</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --orange: #F97316;
+  --orange-hover: #ea6c0f;
+  --orange-light: #fff7ed;
+  --orange-mid: #fed7aa;
+  --green: #10B981;
+  --green-light: #ECFDF5;
+  --red: #EF4444;
+
+  --bg: #ffffff;
+  --bg-2: #f9f9f8;
+  --bg-3: #f3f3f1;
+  --border: #e8e7e4;
+  --border-2: #d4d3cf;
+  --text: #1a1917;
+  --text-2: #6b6a66;
+  --text-3: #a09f9b;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 20px;
+
+  --shadow-sm: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+  --shadow-orange: 0 8px 32px rgba(249,115,22,0.18);
+
+  --font: 'DM Sans', system-ui, sans-serif;
+}
+
+html, body { height: 100%; font-family: var(--font); background: var(--bg-3); color: var(--text); }
+
+/* ── WRAPPER ── */
+.wrap {
+  background: var(--bg-3);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── SCREEN ── */
+.screen { display: none; flex-direction: column; min-height: 100vh; }
+.screen.active { display: flex; }
+
+/* ── NAV ── */
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 28px;
+  height: 56px;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.logo img { height: 30px; display: block; }
+.progress-wrap { display: flex; align-items: center; gap: 10px; flex: 1; max-width: 220px; margin: 0 auto; }
+.progress-bar { flex: 1; height: 4px; background: var(--border); border-radius: 99px; overflow: hidden; }
+.progress-fill { height: 100%; background: var(--orange); border-radius: 99px; transition: width 0.5s cubic-bezier(0.4,0,0.2,1); }
+.progress-pct { font-size: 12px; font-weight: 600; color: var(--orange); min-width: 32px; text-align: right; }
+.nav-step { font-size: 12px; color: var(--text-3); font-weight: 500; white-space: nowrap; }
+.nav-done { font-size: 12px; color: var(--green); font-weight: 600; display: flex; align-items: center; gap: 4px; }
+
+/* ── MODAL BG ── */
+.modal-bg {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  background: linear-gradient(160deg, #fff7ed 0%, #f9f9f8 60%);
+}
+.modal {
+  background: var(--bg);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  padding: 36px 32px;
+  width: 100%;
+  max-width: 480px;
+  box-shadow: var(--shadow-md);
+}
+.modal-icon {
+  width: 52px; height: 52px;
+  border-radius: 16px;
+  background: var(--orange-light);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 24px;
+  color: var(--orange);
+}
+.modal-title { font-size: 20px; font-weight: 700; color: var(--text); text-align: center; margin-bottom: 6px; line-height: 1.2; }
+.modal-sub { font-size: 14px; color: var(--text-2); text-align: center; margin-bottom: 24px; line-height: 1.5; }
+
+.modal-option {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: all 0.18s;
+  background: var(--bg);
+}
+.modal-option:hover { border-color: var(--orange); background: var(--orange-light); }
+.modal-option.selected { border-color: var(--orange); background: var(--orange-light); }
+.modal-option input[type=radio] { accent-color: var(--orange); margin-top: 3px; flex-shrink: 0; }
+.modal-option-text { font-size: 14px; color: var(--text); line-height: 1.55; }
+.modal-option-text strong { color: var(--text); font-weight: 600; }
+
+.modal-btn-row { display: flex; gap: 10px; margin-top: 24px; }
+
+/* ── SPLIT LAYOUT ── */
+.split { flex: 1; display: flex; overflow: hidden; }
+.split-left {
+  flex: 1;
+  padding: 40px 36px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-y: auto;
+  background: var(--bg);
+}
+.split-right {
+  width: 44%;
+  background: linear-gradient(160deg, #fff7ed 0%, #fde8cc 100%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 36px 28px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--orange-mid);
+}
+@media(max-width:660px){
+  .split { flex-direction: column; }
+  .split-right { width: 100%; min-height: 200px; border-left: none; border-top: 1px solid var(--orange-mid); }
+  .split-left { padding: 28px 20px; }
+}
+
+/* ── TYPOGRAPHY ── */
+.eyebrow {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--orange);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.screen-title { font-size: 24px; font-weight: 700; color: var(--text); line-height: 1.2; margin-bottom: 8px; }
+.screen-sub { font-size: 14px; color: var(--text-2); line-height: 1.65; margin-bottom: 28px; }
+
+/* ── FORM ── */
+.form-group { margin-bottom: 16px; }
+.form-label {
+  font-size: 13px; font-weight: 500; color: var(--text);
+  margin-bottom: 6px; display: flex; align-items: center; gap: 6px;
+}
+.form-label i { font-size: 14px; color: var(--text-3); }
+.form-input {
+  width: 100%; padding: 9px 12px;
+  font-size: 14px;
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  color: var(--text);
+  transition: border-color 0.18s, box-shadow 0.18s;
+  font-family: var(--font);
+  appearance: none;
+}
+.form-input:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(249,115,22,0.12); }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; }
+@media(max-width:500px){ .form-row, .form-row-3 { grid-template-columns: 1fr; } }
+textarea.form-input { resize: vertical; }
+
+/* ── BUTTONS ── */
+.btn-primary {
+  padding: 11px 20px;
+  border-radius: var(--radius-md);
+  background: var(--orange);
+  color: white;
+  font-size: 14px; font-weight: 600;
+  border: none; cursor: pointer;
+  transition: all 0.18s;
+  font-family: var(--font);
+  display: inline-flex; align-items: center; gap: 6px;
+  box-shadow: 0 2px 8px rgba(249,115,22,0.3);
+}
+.btn-primary:hover { background: var(--orange-hover); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(249,115,22,0.4); }
+.btn-primary:active { transform: translateY(0); }
+.btn-full { width: 100%; justify-content: center; }
+.btn-secondary {
+  padding: 11px 20px;
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  color: var(--text-2);
+  font-size: 14px; font-weight: 500;
+  border: 1px solid var(--border-2);
+  cursor: pointer;
+  font-family: var(--font);
+  display: inline-flex; align-items: center; gap: 6px;
+  transition: all 0.18s;
+}
+.btn-secondary:hover { background: var(--bg-2); border-color: var(--border-2); color: var(--text); }
+.btn-row { display: flex; gap: 10px; margin-top: 20px; }
+.btn-row .btn-primary { flex: 1; justify-content: center; }
+
+/* ── PREVIEW CARD ── */
+.preview-card {
+  background: var(--bg);
+  border-radius: 16px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  width: 100%; max-width: 260px;
+  box-shadow: var(--shadow-orange);
+}
+.preview-header {
+  background: var(--orange);
+  padding: 18px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.preview-avatar {
+  width: 40px; height: 40px; border-radius: 12px;
+  background: rgba(255,255,255,0.25);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 700; color: white; flex-shrink: 0;
+  letter-spacing: -0.5px;
+}
+.preview-store-name { font-size: 14px; font-weight: 700; color: white; word-break: break-all; }
+.preview-tag { font-size: 11px; color: rgba(255,255,255,0.75); margin-top: 2px; }
+.preview-body { padding: 14px 16px; }
+.preview-stat { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.preview-stat:last-of-type { border-bottom: none; }
+.preview-stat-label { font-size: 12px; color: var(--text-3); }
+.preview-stat-val { font-size: 12px; font-weight: 600; color: var(--text); }
+.preview-live {
+  display: inline-flex; align-items: center; gap: 5px;
+  margin-top: 12px; padding: 5px 10px;
+  background: var(--green-light); color: var(--green);
+  border-radius: 99px; font-size: 11px; font-weight: 600;
+}
+.live-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: blink 1.5s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.25} }
+
+/* ── CHIPS ── */
+.chips-wrap { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 8px; }
+.chip {
+  padding: 7px 14px; border-radius: 99px;
+  font-size: 13px; font-weight: 500;
+  border: 1.5px solid var(--border-2);
+  cursor: pointer; transition: all 0.18s;
+  color: var(--text-2); background: var(--bg);
+  user-select: none;
+}
+.chip:hover { border-color: var(--orange); color: var(--orange); }
+.chip.selected { border-color: var(--orange); color: var(--orange); background: var(--orange-light); }
+.carrier-group-label {
+  font-size: 11px; font-weight: 700; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: 0.07em;
+  margin: 20px 0 8px;
+}
+.carrier-format {
+  display: flex; gap: 12px; align-items: center;
+  padding: 10px 14px;
+  background: var(--bg-2);
+  border-radius: var(--radius-md);
+  margin-bottom: 4px;
+  border: 1px solid var(--border);
+}
+.carrier-name { font-size: 13px; font-weight: 500; color: var(--text); min-width: 120px; }
+.radio-group { display: flex; gap: 14px; }
+.radio-label { display: flex; align-items: center; gap: 5px; font-size: 13px; cursor: pointer; color: var(--text-2); }
+.radio-label input { accent-color: var(--orange); }
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--border); margin: 24px 0; }
+
+/* ── TABS ── */
+.tab-bar { display: flex; border-bottom: 1px solid var(--border); margin-bottom: 22px; overflow-x: auto; }
+.tab-btn {
+  padding: 10px 16px;
+  font-size: 13px; font-weight: 500;
+  cursor: pointer; border: none; background: none;
+  color: var(--text-3);
+  border-bottom: 2px solid transparent;
+  transition: all 0.18s;
+  margin-bottom: -1px;
+  font-family: var(--font);
+  white-space: nowrap;
+  display: flex; align-items: center; gap: 6px;
+}
+.tab-btn:hover { color: var(--text); }
+.tab-btn.active { color: var(--orange); border-bottom-color: var(--orange); }
+
+/* ── UPLOAD ZONE ── */
+.upload-zone {
+  border: 1.5px dashed var(--border-2);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.18s;
+  background: var(--bg-2);
+}
+.upload-zone:hover { border-color: var(--orange); background: var(--orange-light); }
+.upload-zone i { font-size: 28px; color: var(--text-3); margin-bottom: 8px; display: block; }
+.upload-zone p { font-size: 13px; color: var(--text-2); }
+.upload-link { color: var(--orange); font-weight: 600; }
+
+/* ── BULK CARD ── */
+.bulk-card { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 18px; background: var(--bg-2); }
+.bulk-steps { display: flex; flex-direction: column; gap: 10px; margin-top: 14px; }
+.bulk-step { display: flex; align-items: center; gap: 12px; font-size: 13px; color: var(--text-2); }
+.bulk-step-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--orange); color: white;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+
+/* ── GUARANTEE ── */
+.guarantee-item { border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px; margin-bottom: 10px; background: var(--bg); }
+.guarantee-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.guarantee-toggle { width: 36px; height: 20px; border-radius: 99px; background: var(--orange); position: relative; cursor: pointer; flex-shrink: 0; }
+.guarantee-toggle-dot { width: 16px; height: 16px; border-radius: 50%; background: white; position: absolute; top: 2px; right: 2px; transition: right 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.2); }
+.guarantee-title { font-size: 14px; font-weight: 500; color: var(--text); }
+.guarantee-row { display: grid; grid-template-columns: 1fr 80px; gap: 8px; margin-bottom: 8px; }
+
+/* ── INFO BANNER ── */
+.info-banner {
+  background: var(--orange-light);
+  border: 1px solid var(--orange-mid);
+  border-radius: var(--radius-md);
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--text-2);
+  display: flex; gap: 8px; align-items: flex-start;
+}
+.info-banner i { color: var(--orange); flex-shrink: 0; margin-top: 1px; }
+
+/* ── AHA SCREEN ── */
+.aha-wrap {
+  flex: 1;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  background: linear-gradient(160deg, #fff7ed 0%, #f9f9f8 50%);
+  overflow-y: auto;
+}
+.aha-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--green-light);
+  color: var(--green);
+  border-radius: 99px;
+  padding: 6px 14px;
+  font-size: 12px; font-weight: 700;
+  margin-bottom: 20px;
+  text-transform: uppercase; letter-spacing: 0.07em;
+}
+.aha-emoji { font-size: 56px; margin-bottom: 16px; line-height: 1; }
+.aha-title { font-size: 30px; font-weight: 800; color: var(--text); margin-bottom: 10px; letter-spacing: -0.5px; }
+.aha-sub { font-size: 15px; color: var(--text-2); max-width: 380px; margin-bottom: 32px; line-height: 1.6; }
+
+.network-card {
+  background: var(--bg);
+  border-radius: var(--radius-xl);
+  padding: 22px 28px;
+  margin-bottom: 16px;
+  width: 100%; max-width: 400px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+}
+.network-number { font-size: 44px; font-weight: 800; color: var(--orange); line-height: 1; letter-spacing: -1px; }
+.network-label { font-size: 13px; color: var(--text-2); margin-top: 4px; }
+.network-trend {
+  font-size: 12px; color: var(--green); font-weight: 600;
+  margin-top: 8px; display: flex; align-items: center; gap: 4px;
+}
+
+.pending-card {
+  background: var(--bg);
+  border-radius: var(--radius-xl);
+  padding: 18px 20px;
+  margin-bottom: 24px;
+  width: 100%; max-width: 400px;
+  border: 1px solid var(--border);
+  text-align: left;
+  box-shadow: var(--shadow-sm);
+}
+.pending-title {
+  font-size: 11px; font-weight: 700; color: var(--text-3);
+  text-transform: uppercase; letter-spacing: 0.07em;
+  margin-bottom: 12px;
+}
+.pending-item { display: flex; align-items: center; gap: 10px; padding: 6px 0; font-size: 13px; color: var(--text-2); }
+.pending-item i { font-size: 16px; color: var(--border-2); }
+
+/* ── HOME ── */
+.home-body { flex: 1; padding: 28px 24px; background: var(--bg-3); overflow-y: auto; }
+.home-inner { max-width: 560px; margin: 0 auto; }
+
+.welcome-banner {
+  background: var(--orange);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 16px;
+  box-shadow: var(--shadow-orange);
+}
+.welcome-text-wrap { flex: 1; }
+.welcome-title { font-size: 16px; font-weight: 700; color: white; margin-bottom: 3px; }
+.welcome-sub { font-size: 13px; color: rgba(255,255,255,0.8); }
+.active-pill {
+  background: rgba(255,255,255,0.2);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 99px;
+  font-size: 12px; font-weight: 600;
+  display: flex; align-items: center; gap: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(130px,1fr)); gap: 10px; margin-bottom: 20px; }
+.stat-card {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+.stat-num { font-size: 24px; font-weight: 700; color: var(--text); line-height: 1; }
+.stat-label { font-size: 12px; color: var(--text-3); margin-top: 4px; }
+
+.checklist-card {
+  background: var(--bg);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.cl-header { padding: 16px 20px; border-bottom: 1px solid var(--border); }
+.cl-title { font-size: 14px; font-weight: 600; color: var(--text); }
+.cl-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+.cl-item { display: flex; align-items: center; gap: 12px; padding: 13px 20px; border-bottom: 1px solid var(--border); }
+.cl-item:last-child { border-bottom: none; }
+.cl-check { width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.cl-check.done { background: var(--green); }
+.cl-check.pending { background: var(--bg-3); border: 1.5px solid var(--border-2); }
+.cl-check.done i { font-size: 11px; color: white; }
+.cl-text { font-size: 13px; color: var(--text); flex: 1; }
+.cl-text.done { text-decoration: line-through; color: var(--text-3); }
+.cl-badge {
+  font-size: 11px; padding: 3px 9px;
+  border-radius: 99px;
+  background: var(--bg-2);
+  color: var(--text-3);
+  font-weight: 500;
+  white-space: nowrap;
+  border: 1px solid var(--border);
+}
+
+/* ── NOTIFICATION ── */
+.notif-btn { position: relative; cursor: pointer; display: flex; align-items: center; }
+.notif-btn i { font-size: 20px; color: var(--text-2); transition: color 0.18s; }
+.notif-btn:hover i { color: var(--text); }
+#notif-badge {
+  position: absolute; top: -4px; right: -5px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--red); color: white;
+  font-size: 10px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  border: 2px solid white;
+}
+#notif-dropdown {
+  display: none;
+  position: absolute; top: 52px; right: 16px;
+  width: 300px; z-index: 100;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  overflow: hidden;
+}
+.notif-header { padding: 14px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.notif-header-title { font-size: 13px; font-weight: 700; color: var(--text); }
+.notif-close { cursor: pointer; color: var(--text-3); font-size: 16px; line-height: 1; }
+.notif-item { padding: 14px 16px; }
+.notif-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--orange-light); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.notif-body { flex: 1; }
+.notif-title { font-size: 13px; font-weight: 600; color: var(--text); }
+.notif-desc { font-size: 13px; color: var(--text-2); margin-top: 1px; }
+.notif-time { font-size: 11px; color: var(--text-3); margin-top: 4px; }
+
+/* ── TABLE ── */
+.table-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.data-table { width: 100%; border-collapse: collapse; background: var(--bg); font-size: 13px; }
+.data-table th { padding: 11px 14px; text-align: left; font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.06em; background: var(--bg-2); border-bottom: 1px solid var(--border); white-space: nowrap; }
+.data-table td { padding: 12px 14px; color: var(--text); border-bottom: 1px solid var(--border); vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--bg-2); }
+
+/* ── BADGES ── */
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 99px; font-size: 11px; font-weight: 600; }
+.badge-yellow { background: #fef9c3; color: #854d0e; }
+.badge-blue { background: #dbeafe; color: #1d4ed8; }
+.badge-green { background: var(--green-light); color: var(--green); }
+.badge-orange { background: var(--orange-light); color: var(--orange); }
+
+/* ── SIDE PANEL ── */
+.side-panel-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 200; }
+.side-panel {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: 360px; max-width: 100%;
+  background: var(--bg);
+  border-left: 1px solid var(--border);
+  box-shadow: -8px 0 40px rgba(0,0,0,0.12);
+  z-index: 201;
+  display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+.side-panel.open { transform: translateX(0); }
+.side-panel-header { padding: 20px; border-bottom: 1px solid var(--border); display: flex; align-items: flex-start; justify-content: space-between; }
+.side-panel-body { flex: 1; overflow-y: auto; padding: 20px; }
+.sp-section { margin-bottom: 20px; }
+.sp-section-label { font-size: 11px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; }
+.sp-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 13px; }
+.sp-row-label { color: var(--text-2); }
+.sp-row-val { color: var(--text); font-weight: 500; text-align: right; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; display: inline-block; margin-right: 6px; }
+
+/* ── TOAST ── */
+#toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+  background: #1a1917; color: white;
+  padding: 11px 20px; border-radius: 99px;
+  font-size: 13px; font-weight: 500;
+  display: flex; align-items: center; gap: 8px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 300; white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+}
+#toast.show { opacity: 1; }
+
+/* ── CONTEXT BANNER ── */
+.ctx-banner {
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  display: flex; align-items: flex-start; gap: 12px;
+  margin-bottom: 16px;
+  border-left: 3px solid var(--orange);
+  background: var(--orange-light);
+}
+.ctx-banner.green { border-left-color: var(--green); background: var(--green-light); }
+.ctx-banner-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.ctx-banner-text { flex: 1; }
+.ctx-banner-title { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+.ctx-banner-sub { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+
+/* ── ORDER SUMMARY CARD ── */
+.order-summary-card {
+  background: var(--bg);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  width: 100%; max-width: 240px;
+  box-shadow: var(--shadow-md);
+}
+.osc-header { background: linear-gradient(135deg, #1a1917, #2d2c29); padding: 18px 16px; }
+.osc-label { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.5); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 4px; }
+.osc-id { font-size: 18px; font-weight: 800; color: white; }
+.osc-body { padding: 14px 16px; }
+.osc-row { display: flex; flex-direction: column; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.osc-row:last-child { border-bottom: none; }
+.osc-row-lbl { font-size: 10px; font-weight: 700; color: var(--text-3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 3px; }
+.osc-row-val { font-size: 13px; font-weight: 500; color: var(--text); }
+
+/* ── CELEBRATION ── */
+.celebration-wrap {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 48px 24px; text-align: center;
+  background: linear-gradient(160deg, #f0fdf4 0%, #f9f9f8 60%);
+  overflow-y: auto;
+}
+.trophy-circle {
+  width: 90px; height: 90px; border-radius: 50%;
+  background: var(--green-light);
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 20px; position: relative;
+}
+.trophy-circle i { font-size: 42px; color: var(--green); }
+.trophy-circle::after {
+  content: ''; position: absolute; inset: -8px;
+  border-radius: 50%; border: 2px solid var(--green);
+  opacity: 0.25; animation: pulse 2s infinite;
+}
+.summary-box {
+  background: var(--bg);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--border);
+  padding: 20px 24px;
+  width: 100%; max-width: 380px;
+  text-align: left;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+}
+.summary-item { display: flex; align-items: center; gap: 10px; padding: 7px 0; font-size: 14px; color: var(--text); }
+.summary-item i { color: var(--green); font-size: 16px; flex-shrink: 0; }
+.summary-divider { height: 1px; background: var(--border); margin: 10px 0; }
+.summary-stat { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 13px; }
+.summary-stat-lbl { color: var(--text-2); }
+.summary-stat-val { font-weight: 700; color: var(--text); }
+
+/* ── MOTIVATION BANNER ── */
+.motivation-banner {
+  background: var(--orange-light);
+  border-left: 3px solid var(--orange);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+  margin-bottom: 24px;
+  display: flex; align-items: center; gap: 14px;
+}
+.motivation-text { flex: 1; }
+.motivation-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.motivation-sub { font-size: 13px; color: var(--text-2); line-height: 1.5; }
+
+/* ── CARRIER PREVIEW TAGS ── */
+.prev-carrier-tag {
+  display: inline-block;
+  padding: 3px 9px;
+  background: var(--orange-light);
+  color: var(--orange);
+  border: 1px solid var(--orange-mid);
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ── RIGHT PANEL LABELS ── */
+.right-label { font-size: 11px; color: var(--text-3); font-weight: 600; text-align: center; margin-bottom: 16px; letter-spacing: 0.04em; text-transform: uppercase; }
+
+.right-info-card {
+  background: var(--bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  padding: 16px;
+  width: 100%; max-width: 230px;
+  box-shadow: var(--shadow-sm);
+}
+.right-info-label { font-size: 11px; color: var(--text-3); margin-bottom: 4px; }
+.right-info-num { font-size: 26px; font-weight: 700; color: var(--orange); }
+.right-info-sub { font-size: 12px; color: var(--text-3); margin-top: 2px; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<!-- ═══════════════════════════════════════
+     S1 — ¿Cómo quieres usar Dropi?
+═══════════════════════════════════════ -->
+<div class="screen active" id="s1" data-screen-label="01 Rol">
+  <nav class="nav">
+    <div class="logo"><img src="dropi-logo.png" alt="dropi"></div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" style="width:14%"></div></div>
+      <span class="progress-pct">14%</span>
+    </div>
+    <div class="nav-step">Paso 1 de 7</div>
+  </nav>
+  <div class="modal-bg">
+    <div class="modal">
+      <div class="modal-icon"><i class="ri-store-3-line"></i></div>
+      <div class="modal-title">¿Cómo quieres usar Dropi?</div>
+      <div class="modal-sub">Elige una opción para personalizar tu experiencia</div>
+      <div class="modal-option" onclick="selectModal(this)">
+        <input type="radio" name="m1">
+        <span class="modal-option-text"><strong>Proveedor</strong> — Publico mis productos en el catálogo para que los dropshippers los vendan. Yo me encargo del despacho.</span>
+      </div>
+      <div class="modal-option selected" onclick="selectModal(this)">
+        <input type="radio" name="m1" checked>
+        <span class="modal-option-text"><strong>Marca / Emprendedor</strong> — Vendo mis propios productos y uso Dropi para gestionar el envío a mis clientes.</span>
+      </div>
+      <div class="modal-btn-row">
+        <button class="btn-primary btn-full" onclick="goTo('s2')">Continuar <i class="ri-arrow-right-line"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     S2 — ¿Cuántas ventas al mes?
+═══════════════════════════════════════ -->
+<div class="screen" id="s2" data-screen-label="02 Ventas">
+  <nav class="nav">
+    <div class="logo"><img src="dropi-logo.png" alt="dropi"></div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" style="width:28%"></div></div>
+      <span class="progress-pct">28%</span>
+    </div>
+    <div class="nav-step">Paso 2 de 7</div>
+  </nav>
+  <div class="modal-bg">
+    <div class="modal">
+      <div class="modal-icon"><i class="ri-bar-chart-2-line"></i></div>
+      <div class="modal-title">¿Cuántas ventas realiza tu marca al mes?</div>
+      <div class="modal-sub">Esto nos ayuda a mostrarte las herramientas más útiles</div>
+      <div class="modal-option selected" onclick="selectModal(this)"><input type="radio" name="m2" checked><span class="modal-option-text">Aún no vendo</span></div>
+      <div class="modal-option" onclick="selectModal(this)"><input type="radio" name="m2"><span class="modal-option-text">Menos de 50 al mes</span></div>
+      <div class="modal-option" onclick="selectModal(this)"><input type="radio" name="m2"><span class="modal-option-text">51 a 300 al mes</span></div>
+      <div class="modal-option" onclick="selectModal(this)"><input type="radio" name="m2"><span class="modal-option-text">301 a 1.000 al mes</span></div>
+      <div class="modal-option" onclick="selectModal(this)"><input type="radio" name="m2"><span class="modal-option-text">Más de 1.000 al mes</span></div>
+      <div class="modal-btn-row">
+        <button class="btn-secondary" onclick="goTo('s1')"><i class="ri-arrow-left-line"></i></button>
+        <button class="btn-primary" style="flex:1;justify-content:center" onclick="goTo('s3')">Continuar <i class="ri-arrow-right-line"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     S3 — ¿Cómo gestionas envíos?
+═══════════════════════════════════════ -->
+<div class="screen" id="s3" data-screen-label="03 Envíos">
+  <nav class="nav">
+    <div class="logo"><img src="dropi-logo.png" alt="dropi"></div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" style="width:42%"></div></div>
+      <span class="progress-pct">42%</span>
+    </div>
+    <div class="nav-step">Paso 3 de 7</div>
+  </nav>
+  <div class="modal-bg">
+    <div class="modal">
+      <div class="modal-icon"><i class="ri-truck-line"></i></div>
+      <div class="modal-title">¿Cómo prefieres gestionar tus envíos?</div>
+      <div class="modal-sub">Puedes cambiar esto después desde tu configuración</div>
+      <div class="modal-option selected" onclick="selectModal(this)">
+        <input type="radio" name="m3" checked>
+        <span class="modal-option-text"><strong>Yo gestiono mis envíos</strong> — Almaceno, empaco y despacho desde mi bodega.</span>
+      </div>
+      <div class="modal-option" onclick="selectModal(this)">
+        <input type="radio" name="m3">
+        <span class="modal-option-text"><strong>Dropi gestiona mis envíos</strong> — Dropi almacena, empaca y despacha mis pedidos por mí.</span>
+      </div>
+      <div class="modal-btn-row">
+        <button class="btn-secondary" onclick="goTo('s2')"><i class="ri-arrow-left-line"></i></button>
+        <button class="btn-primary" style="flex:1;justify-content:center" onclick="goTo('s4')">Continuar <i class="ri-arrow-right-line"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     S4 — Nombre de tienda
+═══════════════════════════════════════ -->
+<div class="screen" id="s4" data-screen-label="04 Tienda">
+  <nav class="nav">
+    <div class="logo"><img src="dropi-logo.png" alt="dropi"></div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" style="width:57%"></div></div>
+      <span class="progress-pct">57%</span>
+    </div>
+    <div class="nav-step">Paso 4 de 7</div>
+  </nav>
+  <div class="split">
+    <div class="split-left">
+      <div class="eyebrow">Tu marca en Dropi</div>
+      <h1 class="screen-title">Dale nombre a tu tienda</h1>
+      <p class="screen-sub">Este es el nombre que verán los dropshippers cuando encuentren tus productos en el catálogo.</p>
+      <div class="form-group">
+        <label class="form-label"><i class="ri-store-2-line"></i> Nombre de tu tienda</label>
+        <input class="form-input" id="store-input" placeholder="Ej: Moda Urbana CO" oninput="livePreview(this.value)">
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="ri-price-tag-3-line"></i> Categoría principal</label>
+        <select class="form-input">
+          <option>Moda y ropa</option>
+          <option>Belleza y cuidado</option>
+          <option>Hogar y decoración</option>
+          <option>Tecnología</option>
+          <option>Deportes</option>
+          <option>Alimentos y bebidas</option>
+        </select>
+      </div>
+      <div class="btn-row">
+        <button class="btn-secondary" onclick="goTo('s3')"><i class="ri-arrow-left-line"></i></button>
+        <button class="btn-primary" onclick="goTo('s5')">Configurar operación <i class="ri-arrow-right-line"></i></button>
+      </div>
+      <button onclick="goToHomeLater()" style="margin-top:12px;background:none;border:none;font-size:13px;color:var(--text-3);cursor:pointer;font-family:var(--font);padding:4px 0;text-decoration:underline;text-underline-offset:3px;">Intentar más tarde</button>
+    </div>
+    <div class="split-right">
+      <div class="right-label">Vista previa en tiempo real</div>
+      <div class="preview-card">
+        <div class="preview-header">
+          <div class="preview-avatar" id="prev-avatar">?</div>
+          <div>
+            <div class="preview-store-name" id="prev-name">Tu tienda aquí</div>
+            <div class="preview-tag">Catálogo Dropi · Moda y ropa</div>
+          </div>
+        </div>
+        <div class="preview-body">
+          <div class="preview-stat">
+            <span class="preview-stat-label"><i class="ri-user-line" style="font-size:11px;margin-right:3px"></i>Dropshippers</span>
+            <span class="preview-stat-val" style="color:var(--orange)">1.847 activos</span>
+          </div>
+          <div class="preview-stat">
+            <span class="preview-stat-label"><i class="ri-box-3-line" style="font-size:11px;margin-right:3px"></i>Productos</span>
+            <span class="preview-stat-val">0 publicados</span>
+          </div>
+          <div class="preview-stat">
+            <span class="preview-stat-label"><i class="ri-map-pin-line" style="font-size:11px;margin-right:3px"></i>Estado</span>
+            <span class="preview-stat-val" style="color:var(--green)">Activa</span>
+          </div>
+          <div class="preview-live"><span class="live-dot"></span>Vista previa en vivo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     S5 — Bodega + Transportadoras
+═══════════════════════════════════════ -->
+<div class="screen" id="s5" data-screen-label="05 Bodega">
+  <nav class="nav">
+    <div class="logo"><img src="dropi-logo.png" alt="dropi"></div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" style="width:71%"></div></div>
+      <span class="progress-pct">71%</span>
+    </div>
+    <div class="nav-step">Paso 5 de 7</div>
+  </nav>
+  <div class="split">
+    <div class="split-left" style="overflow-y:auto;">
+      <div class="eyebrow">Tu punto de despacho</div>
+      <h1 class="screen-title">Configura tu bodega</h1>
+      <p class="screen-sub">Desde aquí saldrán tus productos hacia los clientes finales.</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label"><i class="ri-building-2-line"></i> Nombre de bodega</label>
+          <input class="form-input" placeholder="Bodega Principal" value="Bodega Principal">
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="ri-phone-line"></i> Teléfono</label>
+          <input class="form-input" placeholder="300 000 0000" value="310 234 5678">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label"><i class="ri-map-2-line"></i> Departamento</label>
+          <select class="form-input"><option>Cundinamarca</option><option>Antioquia</option><option>Valle del Cauca</option></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="ri-map-pin-line"></i> Ciudad</label>
+          <select class="form-input"><option>Bogotá</option><option>Medellín</option><option>Cali</option></select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="ri-road-map-line"></i> Dirección</label>
+        <input class="form-input" placeholder="Calle 123 # 45-67" value="Cra 15 # 82-45">
+      </div>
+
+      <div class="divider"></div>
+      <div class="eyebrow">Transportadoras</div>
+      <p style="font-size:13px;color:var(--text-2);margin-bottom:14px;line-height:1.5;">Selecciona las transportadoras con las que quieres operar.</p>
+
+      <div class="carrier-group-label">Formato ya definido</div>
+      <div class="chips-wrap">
+        <div class="chip selected" onclick="this.classList.toggle('selected')">Domina <span style="opacity:0.6;font-size:11px">— Carta</span></div>
+        <div class="chip" onclick="this.classList.toggle('selected')">TCC <span style="opacity:0.6;font-size:11px">— Sticker</span></div>
+      </div>
+
+      <div class="carrier-group-label">Elige el formato</div>
+      <div class="chips-wrap" style="margin-bottom:12px;">
+        <div class="chip selected" onclick="toggleCarrier(this,'cf-Veloces')">Veloces</div>
+        <div class="chip selected" onclick="toggleCarrier(this,'cf-Envia')">Envía</div>
+        <div class="chip selected" onclick="toggleCarrier(this,'cf-Inter')">Interrapidísimo</div>
+        <div class="chip" onclick="toggleCarrier(this,'cf-Coord')">Coordinadora</div>
+        <div class="chip" onclick="toggleCarrier(this,'cf-99')">99Minutos</div>
+      </div>
+      <div id="cf-Veloces" class="carrier-format"><span class="carrier-name">Veloces</span><div class="radio-group"><label class="radio-label"><input type="radio" name="cfv" checked> Carta</label><label class="radio-label"><input type="radio" name="cfv"> Sticker 10×15</label></div></div>
+      <div id="cf-Envia" class="carrier-format"><span class="carrier-name">Envía</span><div class="radio-group"><label class="radio-label"><input type="radio" name="cfe" checked> Carta</label><label class="radio-label"><input type="radio" name="cfe"> Sticker 10×15</label></div></div>
+      <div id="cf-Inter" class="carrier-format"><span class="carrier-name">Interrapidísimo</span><div class="radio-group"><label class="radio-label"><input type="radio" name="cfi" checked> Carta</label><label class="radio-label"><input type="radio" name="cfi"> Sticker 10×15</label></div></div>
+      <div id="cf-Coord" class="carrier-format" style="display:none"><span class="carrier-name">Coordinadora</span><div class="radio-group"><label class="radio-label"><input type="radio" name="cfc" checked> Carta</label><label class="radio-label"><input type="radio" name="cfc"> Sticker 10×15</label></div></div>
+      <div id="cf-99" class="carrier-format" style="display:none"><span class="carrier-name">99Minutos</span><div class="radio-group"><label class="radio-label"><input type="radio" name="cf9" checked> Carta</label><label class="radio-label"><input type="radio" name="cf9"> Sticker 10×15</label></div></div>
+
+      <div class="btn-row" style="margin-top:24px;">
+        <button class="btn-secondary" onclick="goTo('s4')"><i class="ri-arrow-left-line"></i></button>
+        <button class="btn-primary" onclick="goTo('s6')">Agregar producto <i class="ri-arrow-right-line"></i></button>
+      </div>
+      <button onclick="goToHomeLater()" style="margin-top:12px;background:none;border:none;font-size:13px;color:var(--text-3);cursor:pointer;font-family:var(--font);padding:4px 0;text-decoration:underline;text-underline-offset:3px;">Intentar más tarde</button>
+    </div>
+    <div class="split-right" style="justify-content:flex-start;padding-top:36px;">
+      <div class="right-label" style="margin-bottom:14px;">Vista previa de bodega</div>
+      <div style="background:var(--bg);border-radius:var(--radius-xl);border:1px solid var(--border);box-shadow:var(--shadow-md);width:100%;max-width:240px;overflow:hidden;">
+        <!-- Header bodega -->
+        <div style="background:linear-gradient(135deg,#1a1917 0%,#2d2c29 100%);padding:18px 16px;display:flex;align-items:center;gap:12px;">
+          <div style="width:44px;height:44px;border-radius:12px;background:rgba(249,115,22,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+            <i class="ri-store-3-line" style="font-size:22px;color:var(--orange);"></i>
+          </div>
+          <div>
+            <div id="prev-warehouse-name" style="font-size:14px;font-weight:700;color:white;line-height:1.2;">Bodega Principal</div>
+            <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:2px;">Punto de despacho</div>
+          </div>
+        </div>
+        <!-- Info -->
+        <div style="padding:14px 16px;">
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);">
+            <i class="ri-map-pin-line" style="font-size:14px;color:var(--orange);margin-top:1px;flex-shrink:0;"></i>
+            <div>
+              <div style="font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Ubicación</div>
+              <div id="prev-location" style="font-size:13px;color:var(--text);font-weight:500;margin-top:2px;">Bogotá, Cundinamarca</div>
+            </div>
+          </div>
+          <div style="display:flex;align-items:flex-start;gap:8px;padding:8px 0;border-bottom:1px solid var(--border);">
+            <i class="ri-road-map-line" style="font-size:14px;color:var(--orange);margin-top:1px;flex-shrink:0;"></i>
+            <div>
+              <div style="font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;">Dirección</div>
+              <div id="prev-address" style="font-size:13px;color:var(--text);font-weight:500;margin-top:2px;">Cra 15 # 82-45</div>
+            </div>
+          </div>
+          <div style="padding:10px 0 4px;">
+            <div style="font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:8px;">Transportadoras activas</div>
+            <div id="prev-carriers" style="display:flex;flex-wrap:wrap;gap:5px;">
+              <span class="prev-carrier-tag">Domina</span>
+              <span class="prev-carrier-tag">Veloces</span>
+              <span class="prev-carrier-tag">Envía</span>
+              <span class="prev-carrier-tag">Interrapidísimo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     S6 — Crear producto
+═══════════════════════════════════════ -->
+<div class="screen" id="s6" data-screen-label="06 Producto">
+  <nav class="nav">
+    <div class="logo"><img src="dropi-logo.png" alt="dropi"></div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" style="width:85%"></div></div>
+      <span class="progress-pct">85%</span>
+    </div>
+    <div class="nav-step">Paso 6 de 7</div>
+  </nav>
+  <div class="split">
+    <div class="split-left" style="overflow-y:auto;padding:32px 36px;">
+      <div class="eyebrow">Tu primer producto</div>
+      <h1 class="screen-title" style="font-size:20px;">Agrega tu primer producto</h1>
+
+      <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchProdTab(this,'pt-general')"><i class="ri-file-list-3-line"></i> General</button>
+        <button class="tab-btn" onclick="switchProdTab(this,'pt-stock')"><i class="ri-stack-line"></i> Stock</button>
+        <button class="tab-btn" onclick="switchProdTab(this,'pt-garantia')"><i class="ri-shield-check-line"></i> Garantía</button>
+        <button class="tab-btn" onclick="switchProdTab(this,'pt-masivo')"><i class="ri-upload-cloud-2-line"></i> Cargue masivo</button>
+      </div>
+
+      <!-- TAB GENERAL -->
+      <div id="pt-general">
+        <div class="form-group">
+          <label class="form-label"><i class="ri-price-tag-3-line"></i> Nombre del producto</label>
+          <input class="form-input" placeholder="Ej: Camiseta Básica Premium" value="Camiseta Básica Premium">
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="ri-eye-line"></i> Visibilidad</label>
+          <select class="form-input"><option>Público — visible para todos los dropshippers</option><option>Privado — solo yo puedo verlo</option></select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label"><i class="ri-money-dollar-circle-line"></i> Precio de venta</label>
+            <input class="form-input" placeholder="$ 0" value="$ 45.000">
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="ri-price-tag-2-line"></i> Precio sugerido</label>
+            <input class="form-input" placeholder="$ 0" value="$ 65.000">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label"><i class="ri-folder-line"></i> Categoría</label>
+            <select class="form-input"><option>Moda y ropa</option><option>Belleza</option><option>Hogar</option><option>Tecnología</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label"><i class="ri-layout-grid-line"></i> Tipo</label>
+            <select class="form-input"><option>Simple</option><option>Con variantes</option></select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="ri-barcode-line"></i> SKU <span style="font-size:11px;color:var(--text-3);font-weight:400;">(Opcional)</span></label>
+          <input class="form-input" placeholder="Ej: CAM-001-BLK">
+        </div>
+        <div class="form-row-3">
+          <div class="form-group"><label class="form-label">Peso (kg)</label><input class="form-input" value="0.3"></div>
+          <div class="form-group"><label class="form-label">Largo (cm)</label><input class="form-input" value="30"></div>
+          <div class="form-group"><label class="form-label">Ancho (cm)</label><input class="form-input" value="20"></div>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="ri-file-text-line"></i> Descripción <span style="font-size:11px;color:var(--text-3);font-weight:400;">(mín. 200 caracteres)</span></label>
+          <textarea class="form-input" rows="3" placeholder="Describe tu producto...">Camiseta de algodón 100% peinado, disponible en tallas XS a XL. Corte regular fit ideal para uso diario. Resistente al lavado, mantiene su color.</textarea>
+        </div>
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="goTo('s5')"><i class="ri-arrow-left-line"></i></button>
+          <button class="btn-primary" onclick="goTo('s7')">Activar mi marca <i class="ri-rocket-line"></i></button>
+        </div>
+        <button onclick="goToHomeLater()" style="margin-top:12px;background:none;border:none;font-size:13px;color:var(--text-3);cursor:pointer;font-family:var(--font);padding:4px 0;text-decoration:underline;text-underline-offset:3px;">Intentar más tarde</button>
+      </div>
+
+      <!-- TAB STOCK -->
+      <div id="pt-stock" style="display:none">
+        <div class="form-group"><label class="form-label"><i class="ri-stack-line"></i> Stock disponible</label><input class="form-input" type="number" value="50"></div>
+        <div class="form-group"><label class="form-label"><i class="ri-alarm-warning-line"></i> Alerta de stock mínimo</label><input class="form-input" type="number" value="10"></div>
+        <div class="form-group">
+          <label class="form-label"><i class="ri-settings-3-line"></i> Gestión de stock</label>
+          <select class="form-input"><option>Dropi gestiona el stock automáticamente</option><option>Yo actualizo el stock manualmente</option></select>
+        </div>
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="switchProdTabByName('pt-general')"><i class="ri-arrow-left-line"></i> General</button>
+          <button class="btn-primary" onclick="switchProdTabByName('pt-garantia')">Garantía <i class="ri-arrow-right-line"></i></button>
+        </div>
+      </div>
+
+      <!-- TAB GARANTIA -->
+      <div id="pt-garantia" style="display:none">
+        <p style="font-size:13px;color:var(--text-2);margin-bottom:14px;line-height:1.5;">Define la política de garantía. Los dropshippers verán esta información al vender tus productos.</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+          <div class="guarantee-item" id="gi-1">
+            <div class="guarantee-header">
+              <div class="guarantee-toggle" onclick="toggleGuarantee(this,'gi-1')" title="Activar/desactivar"><div class="guarantee-toggle-dot"></div></div>
+              <span class="guarantee-title">Orden incompleta</span>
+            </div>
+            <div class="guarantee-fields">
+              <div style="display:flex;gap:6px;margin-bottom:6px;">
+                <select class="form-input" style="flex:1;min-width:0;font-size:13px;padding:7px 8px;">
+                  <option>DÍAS</option><option>SEMANAS</option>
+                </select>
+                <input class="form-input" type="number" value="10" style="width:60px;flex-shrink:0;font-size:13px;padding:7px 8px;">
+              </div>
+              <input class="form-input" placeholder="Observaciones..." style="font-size:13px;padding:7px 8px;">
+            </div>
+          </div>
+          <div class="guarantee-item" id="gi-2">
+            <div class="guarantee-header">
+              <div class="guarantee-toggle" onclick="toggleGuarantee(this,'gi-2')" title="Activar/desactivar"><div class="guarantee-toggle-dot"></div></div>
+              <span class="guarantee-title">Mal funcionamiento</span>
+            </div>
+            <div class="guarantee-fields">
+              <div style="display:flex;gap:6px;margin-bottom:6px;">
+                <select class="form-input" style="flex:1;min-width:0;font-size:13px;padding:7px 8px;">
+                  <option>DÍAS</option><option>SEMANAS</option>
+                </select>
+                <input class="form-input" type="number" value="10" style="width:60px;flex-shrink:0;font-size:13px;padding:7px 8px;">
+              </div>
+              <input class="form-input" placeholder="Observaciones..." style="font-size:13px;padding:7px 8px;">
+            </div>
+          </div>
+          <div class="guarantee-item" id="gi-3">
+            <div class="guarantee-header">
+              <div class="guarantee-toggle" onclick="toggleGuarantee(this,'gi-3')" title="Activar/desactivar"><div class="guarantee-toggle-dot"></div></div>
+              <span class="guarantee-title">Producto roto</span>
+            </div>
+            <div class="guarantee-fields">
+              <div style="display:flex;gap:6px;margin-bottom:6px;">
+                <select class="form-input" style="flex:1;min-width:0;font-size:13px;padding:7px 8px;">
+                  <option>DÍAS</option><option>SEMANAS</option>
+                </select>
+                <input class="form-input" type="number" value="10" style="width:60px;flex-shrink:0;font-size:13px;padding:7px 8px;">
+              </div>
+              <input class="form-input" placeholder="Observaciones..." style="font-size:13px;padding:7px 8px;">
+            </div>
+          </div>
+          <div class="guarantee-item" id="gi-4">
+            <div class="guarantee-header">
+              <div class="guarantee-toggle" onclick="toggleGuarantee(this,'gi-4')" title="Activar/desactivar"><div class="guarantee-toggle-dot"></div></div>
+              <span class="guarantee-title">Orden diferente</span>
+            </div>
+            <div class="guarantee-fields">
+              <div style="display:flex;gap:6px;margin-bottom:6px;">
+                <select class="form-input" style="flex:1;min-width:0;font-size:13px;padding:7px 8px;">
+                  <option>DÍAS</option><option>SEMANAS</option>
+                </select>
+                <input class="form-input" type="number" value="10" style="width:60px;flex-shrink:0;font-size:13px;padding:7px 8px;">
+              </div>
+              <input class="form-input" placeholder="Descripción..." style="font-size:13px;padding:7px 8px;">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-secondary" onclick="switchProdTabByName('pt-stock')"><i class="ri-arrow-left-line"></i> Stock</button>
+          <button class="btn-primary" onclick="goTo('s7')">Activar mi marca <i class="ri-rocket-line"></i></button>
+        </div>
+        <button onclick="goToHomeLater()" style="margin-top:12px;background:none;border:none;font-size:13px;color:var(--text-3);cursor:pointer;font-family:var(--font);padding:4px 0;text-decoration:underline;text-underline-offset:3px;">Intentar más tarde</button>
+      </div>
+
+      <!-- TAB MASIVO -->
+      <div id="pt-masivo" style="display:none">
+        <div class="bulk-card">
+          <p style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;">Carga varios productos a la vez</p>
+          <p style="font-size:13px;color:var(--text-2);">Descarga la plantilla, complétala y súbela aquí.</p>
+          <div class="bulk-steps">
+            <div class="bulk-step"><div class="bulk-step-num">1</div><span>Descarga la plantilla en Excel</span></div>
+            <div class="bulk-step"><div class="bulk-step-num">2</div><span>Completa los datos de tus productos</span></div>
+            <div class="bulk-step"><div class="bulk-step-num">3</div><span>Sube el archivo aquí abajo</span></div>
+          </div>
+          <button class="btn-secondary" style="margin-top:16px;width:100%;justify-content:center;gap:8px;">
+            <i class="ri-file-excel-2-line" style="color:#1D6F42;font-size:16px;"></i> Descargar plantilla Excel
+          </button>
+        </div>
+        <div class="upload-zone" style="margin-top:14px;" onclick="this.querySelector('input').click()">
+          <i class="ri-upload-cloud-2-line"></i>
+          <p>Arrastra tu archivo o <span class="upload-link">selecciona desde tu computador</span></p>
+          <p style="font-size:12px;color:var(--text-3);margin-top:4px;">Formatos: .xlsx — máximo 5MB</p>
+          <input type="file" accept=".xlsx,.xls" style="display:none">
+        </div>
+        <div class="info-banner" style="margin-top:12px;">
+          <i class="ri-information-line"></i>
+          Los productos cargados de forma masiva quedan sin foto. Puedes agregarlas después desde el catálogo.
+        </div>
+        <div class="btn-row" style="margin-top:16px;">
+          <button class="btn-secondary" onclick="switchProdTabByName('pt-general')"><i class="ri-arrow-left-line"></i> Uno a uno</button>
+          <button class="btn-primary" onclick="goTo('s7')">Activar mi marca <i class="ri-rocket-line"></i></button>
+        </div>
+        <button onclick="goToHomeLater()" style="margin-top:12px;background:none;border:none;font-size:13px;color:var(--text-3);cursor:pointer;font-family:var(--font);padding:4px 0;text-decoration:underline;text-underline-offset:3px;">Intentar más tarde</button>
+      </div>
+    </div>
+
+    <!-- DERECHO: foto + preview -->
+    <div class="split-right" style="gap:16px;">
+      <div class="right-label">Foto del producto</div>
+      <div id="img-zone" class="upload-zone" style="width:100%;max-width:220px;aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;" onclick="triggerImgUpload()">
+        <i class="ri-image-add-line" style="font-size:32px;color:var(--text-3);margin-bottom:8px;"></i>
+        <p style="font-size:13px;">Agregar foto</p>
+        <p style="font-size:11px;color:var(--text-3);margin-top:4px;">JPG, PNG o WEBP</p>
+        <input type="file" id="img-input" accept="image/*" style="display:none" onchange="previewImg(this)">
+      </div>
+      <div class="right-info-card" style="max-width:220px;">
+        <div class="right-info-label" style="margin-bottom:8px;">Vista previa del catálogo</div>
+        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:3px;">Camiseta Básica Premium</div>
+        <div style="font-size:12px;color:var(--text-3);margin-bottom:10px;">Moda y ropa · Simple</div>
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div>
+            <div style="font-size:11px;color:var(--text-3);">Precio venta</div>
+            <div style="font-size:15px;font-weight:700;color:var(--orange);">$45.000</div>
+          </div>
+          <div style="text-align:right;">
+            <div style="font-size:11px;color:var(--text-3);">Sugerido</div>
+            <div style="font-size:15px;font-weight:700;color:var(--green);">$65.000</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     S7 — AHA Moment
+═══════════════════════════════════════ -->
+<div class="screen" id="s7" data-screen-label="07 Activación">
+  <nav class="nav">
+    <div class="logo"><img src="dropi-logo.png" alt="dropi"></div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" style="width:100%;background:var(--green)"></div></div>
+      <span class="progress-pct" style="color:var(--green)">100%</span>
+    </div>
+    <div class="nav-done"><i class="ri-checkbox-circle-fill"></i> Completado</div>
+  </nav>
+  <div class="aha-wrap">
+    <div class="aha-badge"><i class="ri-checkbox-circle-fill"></i> Marca activada</div>
+    <div class="aha-emoji">🚀</div>
+    <h1 class="aha-title">¡Ya eres parte de Dropi!</h1>
+    <p class="aha-sub">Tu marca está activa y visible en el catálogo. Los dropshippers en Colombia ya pueden encontrar y vender tus productos.</p>
+    <div class="network-card">
+      <div class="network-number" id="counter">0</div>
+      <div class="network-label">dropshippers activos en Moda y ropa en Colombia</div>
+      <div class="network-trend"><i class="ri-arrow-up-s-fill"></i> 12% más que la semana pasada</div>
+    </div>
+    <div class="pending-card">
+      <div class="pending-title">Para estar al 100% cuando llegue tu primer pedido</div>
+      <div class="pending-item"><i class="ri-circle-line"></i> Configurar recolecciones con transportadora</div>
+      <div class="pending-item"><i class="ri-circle-line"></i> Gestionar órdenes y guías de envío</div>
+      <div class="pending-item"><i class="ri-circle-line"></i> Vincular cuenta bancaria para recibir ganancias</div>
+      <div style="font-size:12px;color:var(--text-3);margin-top:12px;padding-top:12px;border-top:1px solid var(--border);">
+        Te avisamos cuando llegue tu primer pedido y te guiamos paso a paso.
+      </div>
+    </div>
+    <button class="btn-primary" style="max-width:400px;justify-content:center;padding:13px 24px;font-size:15px;" onclick="goTo('s8')">
+      Explorar mi panel <i class="ri-arrow-right-line"></i>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     S8 — Home post-activación
+═══════════════════════════════════════ -->
+<div class="screen" id="s8" data-screen-label="08 Panel">
+  <nav class="nav" style="position:relative;">
+    <div class="logo"><img src="dropi-logo.png" alt="dropi"></div>
+    <div style="display:flex;align-items:center;gap:16px;">
+      <div style="font-size:14px;color:var(--text-2);">Hola, <strong id="home-name" style="color:var(--text);">Moda Urbana CO</strong> 👋</div>
+      <div class="notif-btn" onclick="toggleNotif()">
+        <i class="ri-notification-3-line"></i>
+        <div id="notif-badge">1</div>
+      </div>
+    </div>
+    <!-- Dropdown notificación -->
+    <div id="notif-dropdown">
+      <div class="notif-header">
+        <span class="notif-header-title">Notificaciones</span>
+        <span class="notif-close" onclick="toggleNotif()"><i class="ri-close-line"></i></span>
+      </div>
+      <div class="notif-item">
+        <div style="display:flex;gap:12px;">
+          <div class="notif-icon">🎉</div>
+          <div class="notif-body">
+            <div class="notif-title">¡Tienes tu primer pedido!</div>
+            <div class="notif-desc">Carlos Martínez ordenó<br><strong>Camiseta Básica Premium</strong></div>
+            <div class="notif-time">Hace 2 minutos</div>
+          </div>
+        </div>
+        <button class="btn-primary" style="margin-top:12px;width:100%;justify-content:center;padding:9px 16px;" onclick="goToOrders()">Ver pedido <i class="ri-arrow-right-line"></i></button>
+      </div>
+    </div>
+  </nav>
+  <div class="home-body">
+    <div class="home-inner">
+      <div class="welcome-banner" id="home-banner">
+        <div class="welcome-text-wrap">
+          <div class="welcome-title">Tu marca está activa en Dropi</div>
+          <div class="welcome-sub">Completa los pasos restantes cuando llegue tu primer pedido</div>
+        </div>
+        <div class="active-pill"><i class="ri-checkbox-circle-fill" style="font-size:13px;"></i> Activa</div>
+      </div>
+
+      <div class="stat-grid" id="home-stat-grid">
+        <div class="stat-card">
+          <div class="stat-num" style="color:var(--orange);">1.847</div>
+          <div class="stat-label">Dropshippers conectados</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">1</div>
+          <div class="stat-label">Producto publicado</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" style="color:var(--text-3);">$0</div>
+          <div class="stat-label">Ganancias este mes</div>
+        </div>
+      </div>
+
+      <div class="checklist-card" id="main-checklist">
+        <div class="cl-header">
+          <div class="cl-title">Pasos para operar al 100%</div>
+          <div class="cl-sub" id="cl-sub-text">2 de 5 completados</div>
+        </div>
+        <div class="cl-item" id="cl-item-1" style="cursor:default;" onclick="">
+          <div class="cl-check done" id="cl-check-1"><i class="ri-check-line"></i></div>
+          <span class="cl-text done" id="cl-text-1">Crear tu bodega y configurar transportadoras</span>
+        </div>
+        <div class="cl-item">
+          <div class="cl-check done" id="cl-check-2"><i class="ri-check-line"></i></div>
+          <span class="cl-text done" id="cl-text-2">Publicar tu primer producto</span>
+        </div>
+        <div class="cl-item" id="cl-3">
+          <div class="cl-check pending" id="cl-check-3"></div>
+          <span class="cl-text" id="cl-text-3">Gestionar órdenes y guías</span>
+          <span class="cl-badge" id="cl-badge-3">Al llegar tu pedido</span>
+        </div>
+        <div class="cl-item" id="cl-4">
+          <div class="cl-check pending" id="cl-check-4"></div>
+          <span class="cl-text" id="cl-text-4">Configurar recolecciones</span>
+          <span class="cl-badge" id="cl-badge-4">Al llegar tu pedido</span>
+        </div>
+        <div class="cl-item" id="cl-5">
+          <div class="cl-check pending" id="cl-check-5"></div>
+          <span class="cl-text" id="cl-text-5">Vincular cuenta bancaria</span>
+          <span class="cl-badge" id="cl-badge-5" style="display:none;"></span>
+        </div>
+      </div>
+
+      <button id="continue-activation-btn" class="btn-primary btn-full" style="margin-top:14px;justify-content:center;padding:13px;display:none;" onclick="continueActivation()">
+        Continuar con la activación <i class="ri-arrow-right-line"></i>
+      </button>
+
+      <button class="btn-secondary" style="margin-top:10px;width:100%;justify-content:center;" onclick="homeMode='active';checklistState=[true,true,false,false,false];goTo('s1')">
+        <i class="ri-refresh-line"></i> Reiniciar prototipo
+      </button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /wrap -->
+
+<!-- ═══ TOAST ═══ -->
+<div id="toast"><i class="ri-checkbox-circle-fill" style="color:#4ade80;font-size:15px;"></i> <span id="toast-msg">Guía generada exitosamente</span></div>
+
+<!-- ═══ SIDE PANEL OVERLAY ═══ -->
+<div class="side-panel-overlay" id="panel-overlay" onclick="closePanel()"></div>
+<div class="side-panel" id="order-panel">
+  <div class="side-panel-header">
+    <div>
+      <div style="font-size:16px;font-weight:700;color:var(--text);">Pedido <span id="sp-id">#10042</span></div>
+      <div style="font-size:13px;color:var(--text-2);margin-top:2px;" id="sp-product">Camiseta Básica Premium</div>
+    </div>
+    <div style="cursor:pointer;color:var(--text-3);font-size:20px;" onclick="closePanel()"><i class="ri-close-line"></i></div>
+  </div>
+  <div class="side-panel-body">
+    <div class="sp-section">
+      <div class="sp-section-label">Cliente</div>
+      <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;">Carlos Martínez</div>
+      <div style="font-size:13px;color:var(--text-2);">Calle 45 # 12-34, Bogotá</div>
+      <div style="font-size:13px;color:var(--text-2);">310 987 6543</div>
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-label">Producto</div>
+      <div class="sp-row"><span class="sp-row-label">Artículo</span><span class="sp-row-val">Camiseta Básica Premium × 1</span></div>
+      <div class="sp-row"><span class="sp-row-label">Precio</span><span class="sp-row-val">$65.000</span></div>
+      <div class="sp-row"><span class="sp-row-label">Tipo de envío</span><span class="sp-row-val">Carta</span></div>
+      <div class="sp-row"><span class="sp-row-label">Transportadora</span><span class="sp-row-val">Veloces</span></div>
+    </div>
+    <div class="sp-section">
+      <div class="sp-section-label">Estado actual</div>
+      <div style="display:flex;align-items:center;gap:6px;font-size:14px;font-weight:500;color:var(--text);">
+        <span class="status-dot"></span> Pendiente de despacho
+      </div>
+    </div>
+    <button class="btn-primary btn-full" style="margin-top:8px;" onclick="generateGuide()">
+      Generar guía de envío <i class="ri-arrow-right-line"></i>
+    </button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     S9 — Mis Pedidos
+═══════════════════════════════════════ -->
+<div class="screen" id="s9" data-screen-label="09 Pedidos">
+  <nav class="nav">
+    <div class="logo"><img src="dropi-logo.png" alt="dropi"></div>
+    <div style="font-size:14px;color:var(--text-2);">Hola, <strong id="s9-store-name" style="color:var(--text);">Moda Urbana CO</strong></div>
+  </nav>
+  <div class="home-body">
+    <div class="home-inner" style="max-width:860px;">
+
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <h2 style="font-size:20px;font-weight:700;color:var(--text);">Mis Pedidos</h2>
+        <span class="badge badge-orange">1 pedido nuevo</span>
+      </div>
+
+      <!-- Banner contextual -->
+      <div class="ctx-banner" id="s9-banner-initial">
+        <div class="ctx-banner-icon">🎉</div>
+        <div class="ctx-banner-text">
+          <div class="ctx-banner-title">¡Tu primer pedido ha llegado!</div>
+          <div class="ctx-banner-sub">Para despacharlo necesitas completar la guía de envío. Haz clic en "Ver detalle" y usa el botón "Generar guía de envío".</div>
+        </div>
+      </div>
+
+      <!-- Banner siguiente paso (oculto inicialmente) -->
+      <div class="ctx-banner green" id="s9-banner-next" style="display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:flex-start;gap:12px;flex:1;">
+          <div class="ctx-banner-icon" style="color:var(--green);">✅</div>
+          <div class="ctx-banner-text">
+            <div class="ctx-banner-title">Guía generada. Siguiente paso:</div>
+            <div class="ctx-banner-sub">Programa la recolección con Veloces para que recojan el paquete en tu bodega.</div>
+          </div>
+        </div>
+        <button class="btn-primary" style="flex-shrink:0;" onclick="goToPickup()">Configurar recolección <i class="ri-arrow-right-line"></i></button>
+      </div>
+
+      <!-- Tabla -->
+      <div class="table-wrap">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Producto</th>
+              <th>Fecha</th>
+              <th>Cliente</th>
+              <th>Estado</th>
+              <th>Transportadora</th>
+              <th>Bodega</th>
+              <th>Tipo</th>
+              <th>Impreso</th>
+              <th>Detalle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight:600;">#10042</td>
+              <td>Camiseta Básica Premium</td>
+              <td style="color:var(--text-2);">26/04/2026</td>
+              <td>Carlos Martínez</td>
+              <td><span class="badge badge-yellow" id="order-status-badge"><span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;display:inline-block;"></span> Pendiente</span></td>
+              <td>Veloces</td>
+              <td>Bodega Principal</td>
+              <td>Carta</td>
+              <td id="order-printed" style="color:var(--text-3);">No</td>
+              <td><button class="btn-secondary" style="padding:6px 12px;font-size:12px;" onclick="openPanel()">Ver detalle</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     S10 — Configurar Recolección
+═══════════════════════════════════════ -->
+<div class="screen" id="s10" data-screen-label="10 Recolección">
+  <nav class="nav">
+    <div class="logo"><img src="dropi-logo.png" alt="dropi"></div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" style="width:90%"></div></div>
+      <span class="progress-pct">90%</span>
+    </div>
+    <div class="nav-step">Casi listo</div>
+  </nav>
+  <div class="split">
+    <div class="split-left" style="overflow-y:auto;">
+      <div class="eyebrow">Despacha tu primer pedido</div>
+      <h1 class="screen-title">¿Cuándo pasa Veloces a recoger?</h1>
+      <p class="screen-sub">Agenda la recolección de tu paquete en Bodega Principal.</p>
+
+      <div class="form-group">
+        <label class="form-label"><i class="ri-truck-line"></i> Transportadora</label>
+        <div style="display:flex;gap:8px;">
+          <span class="chip selected" style="cursor:default;">Veloces</span>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label"><i class="ri-calendar-event-line"></i> Tipo de recolección</label>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <label style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1.5px solid var(--orange);border-radius:var(--radius-md);background:var(--orange-light);cursor:pointer;">
+            <input type="radio" name="pickup-type" checked style="accent-color:var(--orange);margin-top:2px;">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--text);">Esporádica</div>
+              <div style="font-size:12px;color:var(--text-2);">Programa una recogida para un día específico</div>
+            </div>
+          </label>
+          <label style="display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border:1.5px solid var(--border);border-radius:var(--radius-md);cursor:pointer;">
+            <input type="radio" name="pickup-type" style="accent-color:var(--orange);margin-top:2px;">
+            <div>
+              <div style="font-size:14px;font-weight:600;color:var(--text);">Fija</div>
+              <div style="font-size:12px;color:var(--text-2);">La transportadora pasa todos los días</div>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label"><i class="ri-calendar-line"></i> Fecha de recolección</label>
+          <input class="form-input" type="date" value="2026-04-26">
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="ri-time-line"></i> Hora</label>
+          <select class="form-input">
+            <option>10:00 AM</option><option>11:00 AM</option>
+            <option>2:00 PM</option><option>4:00 PM</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label"><i class="ri-user-line"></i> Nombre de contacto</label>
+          <input class="form-input" value="Nicolás Vargas">
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="ri-phone-line"></i> Teléfono</label>
+          <input class="form-input" value="310 234 5678">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label"><i class="ri-box-3-line"></i> Número de paquetes</label>
+          <input class="form-input" type="number" value="1" min="1">
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="ri-file-text-line"></i> Contenido</label>
+          <input class="form-input" value="Camiseta Básica Premium — 1 unidad">
+        </div>
+      </div>
+
+      <div id="s10-success" style="display:none;background:var(--green-light);border:1px solid #a7f3d0;border-radius:var(--radius-md);padding:13px 16px;font-size:14px;font-weight:500;color:var(--green);display:none;align-items:center;gap:8px;margin-top:4px;">
+        <i class="ri-checkbox-circle-fill" style="font-size:18px;"></i> Recolección confirmada para el 26/04/2026 a las 10:00 AM
+      </div>
+
+      <button class="btn-primary btn-full" style="margin-top:16px;" id="s10-cta" onclick="confirmPickup()">
+        Confirmar recolección <i class="ri-arrow-right-line"></i>
+      </button>
+    </div>
+
+    <!-- Lado derecho: resumen pedido -->
+    <div class="split-right" style="justify-content:flex-start;padding-top:40px;">
+      <div class="right-label" style="margin-bottom:14px;">Despachando</div>
+      <div class="order-summary-card">
+        <div class="osc-header">
+          <div class="osc-label">Pedido</div>
+          <div class="osc-id">#10042</div>
+        </div>
+        <div class="osc-body">
+          <div class="osc-row">
+            <div class="osc-row-lbl">Producto</div>
+            <div class="osc-row-val">Camiseta Básica Premium</div>
+          </div>
+          <div class="osc-row">
+            <div class="osc-row-lbl">Cliente</div>
+            <div class="osc-row-val">Carlos Martínez</div>
+            <div style="font-size:12px;color:var(--text-3);margin-top:2px;">Bogotá, Calle 45 # 12-34</div>
+          </div>
+          <div class="osc-row">
+            <div class="osc-row-lbl">Transportadora</div>
+            <div class="osc-row-val">Veloces — Carta</div>
+          </div>
+          <div class="osc-row" style="border-bottom:none;">
+            <div class="osc-row-lbl">Estado</div>
+            <div style="display:flex;align-items:center;gap:6px;margin-top:3px;">
+              <span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;display:inline-block;"></span>
+              <span style="font-size:13px;font-weight:600;color:#854d0e;">En proceso</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     S11 — Recibe tus Ganancias
+═══════════════════════════════════════ -->
+<div class="screen" id="s11" data-screen-label="11 Ganancias">
+  <nav class="nav">
+    <div class="logo"><img src="dropi-logo.png" alt="dropi"></div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" style="width:96%"></div></div>
+      <span class="progress-pct">96%</span>
+    </div>
+    <div class="nav-step">Último paso</div>
+  </nav>
+  <div class="home-body">
+    <div class="home-inner" style="max-width:640px;">
+
+      <!-- Banner motivación -->
+      <div class="motivation-banner">
+        <div style="font-size:28px;line-height:1;flex-shrink:0;">🚀</div>
+        <div class="motivation-text">
+          <div class="motivation-title">Tu pedido está en camino</div>
+          <div class="motivation-sub">Completa tu validación para recibir <strong style="color:var(--orange);">$45.000</strong> en tu cuenta cuando se entregue.</div>
+        </div>
+        <button class="btn-primary" style="flex-shrink:0;padding:9px 16px;font-size:13px;" onclick="document.getElementById('validation-form').scrollIntoView({behavior:'smooth'})">Completar ahora <i class="ri-arrow-down-line"></i></button>
+      </div>
+
+      <!-- Formulario validación -->
+      <div id="validation-form" style="background:var(--bg);border-radius:var(--radius-xl);border:1px solid var(--border);padding:24px 28px;margin-bottom:20px;box-shadow:var(--shadow-sm);">
+        <h2 style="font-size:18px;font-weight:700;color:var(--text);margin-bottom:4px;">Valida tu identidad para recibir pagos</h2>
+        <p style="font-size:13px;color:var(--text-2);margin-bottom:20px;">Solo necesitas hacerlo una vez. Toma menos de 3 minutos.</p>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label"><i class="ri-id-card-line"></i> Tipo de documento</label>
+            <select class="form-input"><option>CC</option><option>CE</option><option>NIT</option></select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Número</label>
+            <input class="form-input" value="1234567890">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="ri-user-line"></i> Nombre completo</label>
+          <input class="form-input" value="Nicolás Vargas">
+        </div>
+        <div class="form-group">
+          <label class="form-label"><i class="ri-calendar-line"></i> Fecha de nacimiento</label>
+          <input class="form-input" type="date" placeholder="DD/MM/AAAA">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label"><i class="ri-bank-line"></i> Banco</label>
+            <select class="form-input">
+              <option>Bancolombia</option><option>Davivienda</option>
+              <option>Banco de Bogotá</option><option>Nequi</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Número de cuenta</label>
+            <input class="form-input" value="000-123456-78">
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tipo de cuenta</label>
+          <div style="display:flex;gap:20px;padding:4px 0;">
+            <label class="radio-label"><input type="radio" name="account-type" checked style="accent-color:var(--orange);"> Ahorros</label>
+            <label class="radio-label"><input type="radio" name="account-type" style="accent-color:var(--orange);"> Corriente</label>
+          </div>
+        </div>
+
+        <button class="btn-primary btn-full" style="margin-top:8px;padding:13px;" id="s11-cta" onclick="validateIdentity()">
+          Validar y activar pagos <i class="ri-shield-check-line"></i>
+        </button>
+      </div>
+
+      <!-- Tabla transacciones -->
+      <div style="margin-bottom:8px;">
+        <div style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:12px;">Transacciones</div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>#</th><th>Fecha</th><th>Tipo</th><th>Monto</th><th>Descripción</th><th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>26/04/2026</td>
+                <td>Venta</td>
+                <td style="font-weight:600;color:var(--green);">$45.000</td>
+                <td>Camiseta Básica Premium</td>
+                <td><span class="badge badge-yellow"><span style="width:6px;height:6px;border-radius:50%;background:#f59e0b;display:inline-block;"></span> Pendiente de entrega</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════
+     S12 — Activación Completa
+═══════════════════════════════════════ -->
+<div class="screen" id="s12" data-screen-label="12 Completo">
+  <nav class="nav">
+    <div class="logo"><img src="dropi-logo.png" alt="dropi"></div>
+    <div class="nav-done"><i class="ri-checkbox-circle-fill"></i> ¡Todo listo!</div>
+  </nav>
+  <div class="celebration-wrap">
+    <div class="trophy-circle">
+      <i class="ri-trophy-line"></i>
+    </div>
+    <h1 style="font-size:32px;font-weight:800;color:var(--text);margin-bottom:10px;letter-spacing:-0.5px;">¡Operación completa!</h1>
+    <p style="font-size:15px;color:var(--text-2);max-width:380px;margin-bottom:32px;line-height:1.65;">Tu marca está lista para escalar. Tienes todo configurado para recibir, despachar y cobrar tus pedidos.</p>
+
+    <div class="summary-box">
+      <div style="font-size:13px;font-weight:700;color:var(--text-2);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:12px;">Resumen de tu activación</div>
+      <div class="summary-item"><i class="ri-checkbox-circle-fill"></i> Bodega configurada</div>
+      <div class="summary-item"><i class="ri-checkbox-circle-fill"></i> Primer producto publicado</div>
+      <div class="summary-item"><i class="ri-checkbox-circle-fill"></i> Primer pedido gestionado</div>
+      <div class="summary-item"><i class="ri-checkbox-circle-fill"></i> Recolección configurada</div>
+      <div class="summary-item"><i class="ri-checkbox-circle-fill"></i> Cuenta bancaria vinculada</div>
+      <div class="summary-divider"></div>
+      <div class="summary-stat">
+        <span class="summary-stat-lbl">Dropshippers activos</span>
+        <span class="summary-stat-val" style="color:var(--orange);">1.847</span>
+      </div>
+      <div class="summary-stat">
+        <span class="summary-stat-lbl">Ganancia esperada</span>
+        <span class="summary-stat-val" style="color:var(--green);">$45.000</span>
+      </div>
+    </div>
+
+    <button class="btn-primary" style="padding:14px 32px;font-size:15px;justify-content:center;" onclick="goToHomeComplete()">
+      Ir a mi panel <i class="ri-arrow-right-line"></i>
+    </button>
+  </div>
+</div>
+
+<script>
+// ── GLOBALS ──
+let checklistState = [true, true, false, false, false];
+let homeMode = 'active'; // 'active' | 'inactive'
+
+function goToHomeLater() {
+  homeMode = 'inactive';
+  checklistState = [false, false, false, false, false];
+  const n = document.getElementById('store-input');
+  document.getElementById('home-name').textContent = (n && n.value.trim()) ? n.value.trim() : 'Mi Tienda';
+  renderHomeMode();
+  renderChecklist();
+  goTo('s8');
+}
+
+function continueActivation() {
+  homeMode = 'active';
+  checklistState = [true, true, false, false, false];
+  goTo('s5');
+}
+
+function renderHomeMode() {
+  const banner      = document.getElementById('home-banner');
+  const statGrid    = document.getElementById('home-stat-grid');
+  const notifBadge  = document.getElementById('notif-badge');
+
+  const continueBtn = document.getElementById('continue-activation-btn');
+  const clItem1     = document.getElementById('cl-item-1');
+
+  if (homeMode === 'inactive') {
+    // Banner inactivo
+    if (banner) {
+      banner.style.background = 'var(--bg-3)';
+      banner.style.boxShadow  = 'none';
+      banner.style.border     = '1px solid var(--border)';
+      banner.querySelector('.welcome-title').style.color = 'var(--text)';
+      banner.querySelector('.welcome-title').textContent = 'Tu marca aún no está activa';
+      banner.querySelector('.welcome-sub').textContent   = 'Completa la configuración para empezar a recibir pedidos.';
+      const pill = banner.querySelector('.active-pill');
+      if (pill) { pill.style.background = 'var(--bg-2)'; pill.style.color = 'var(--text-3)'; pill.innerHTML = '<i class="ri-pause-circle-line" style="font-size:13px;"></i> Inactiva'; }
+    }
+    if (statGrid) statGrid.style.display = 'none';
+    if (notifBadge) notifBadge.style.display = 'none';
+    if (continueBtn) continueBtn.style.display = 'flex';
+    if (clItem1) {
+      clItem1.style.cursor = 'pointer';
+      clItem1.setAttribute('onclick', 'continueActivation()');
+      clItem1.style.transition = 'background 0.18s';
+      clItem1.onmouseenter = () => clItem1.style.background = 'var(--bg-2)';
+      clItem1.onmouseleave = () => clItem1.style.background = '';
+    }
+  } else {
+    if (banner) {
+      banner.style.background = 'var(--orange)';
+      banner.style.boxShadow  = 'var(--shadow-orange)';
+      banner.style.border     = 'none';
+      banner.querySelector('.welcome-title').style.color = 'white';
+      banner.querySelector('.welcome-title').textContent = 'Tu marca está activa en Dropi';
+      banner.querySelector('.welcome-sub').textContent   = 'Completa los pasos restantes cuando llegue tu primer pedido';
+      const pill = banner.querySelector('.active-pill');
+      if (pill) { pill.style.background = 'rgba(255,255,255,0.2)'; pill.style.color = 'white'; pill.innerHTML = '<i class="ri-checkbox-circle-fill" style="font-size:13px;"></i> Activa'; }
+    }
+    if (statGrid) statGrid.style.display = 'grid';
+    if (notifBadge) notifBadge.style.display = 'flex';
+    if (continueBtn) continueBtn.style.display = 'none';
+    if (clItem1) {
+      clItem1.style.cursor = 'default';
+      clItem1.setAttribute('onclick', '');
+      clItem1.onmouseenter = null;
+      clItem1.onmouseleave = null;
+      clItem1.style.background = '';
+    }
+  }
+}
+const mockOrder = {
+  id: '#10042', product: 'Camiseta Básica Premium',
+  client: 'Carlos Martínez', address: 'Calle 45 # 12-34, Bogotá',
+  phone: '310 987 6543', price: '$65.000', ganancia: '$45.000',
+  carrier: 'Veloces', bodega: 'Bodega Principal', tipo: 'Carta', status: 'Pendiente'
+};
+
+function renderChecklist() {
+  const done = checklistState.filter(Boolean).length;
+  const sub = document.getElementById('cl-sub-text');
+  if (sub) sub.textContent = done + ' de 5 completados';
+
+  const allItems = [
+    { idx: 0, checkId: 'cl-check-1', textId: 'cl-text-1', badgeId: null },
+    { idx: 1, checkId: 'cl-check-2', textId: 'cl-text-2', badgeId: null },
+    { idx: 2, checkId: 'cl-check-3', textId: 'cl-text-3', badgeId: 'cl-badge-3' },
+    { idx: 3, checkId: 'cl-check-4', textId: 'cl-text-4', badgeId: 'cl-badge-4' },
+    { idx: 4, checkId: 'cl-check-5', textId: 'cl-text-5', badgeId: 'cl-badge-5' },
+  ];
+
+  allItems.forEach(({ idx, checkId, textId, badgeId }) => {
+    const check = document.getElementById(checkId);
+    const text  = document.getElementById(textId);
+    const badge = badgeId ? document.getElementById(badgeId) : null;
+    if (!check) return;
+    if (checklistState[idx]) {
+      check.className = 'cl-check done';
+      check.innerHTML = '<i class="ri-check-line"></i>';
+      if (text) text.className = 'cl-text done';
+      if (badge) badge.style.display = 'none';
+    } else {
+      check.className = 'cl-check pending';
+      check.innerHTML = '';
+      if (text) text.className = 'cl-text';
+      if (badge) badge.style.display = '';
+    }
+  });
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  const m = document.getElementById('toast-msg');
+  if (!t) return;
+  if (msg) m.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function toggleNotif() {
+  const d = document.getElementById('notif-dropdown');
+  d.style.display = d.style.display === 'block' ? 'none' : 'block';
+}
+document.addEventListener('click', function(e) {
+  const dropdown = document.getElementById('notif-dropdown');
+  if (!dropdown) return;
+  if (!e.target.closest('.notif-btn') && !e.target.closest('#notif-dropdown')) {
+    dropdown.style.display = 'none';
+  }
+});
+
+function goToOrders() {
+  const badge = document.getElementById('notif-badge');
+  const dropdown = document.getElementById('notif-dropdown');
+  if (badge) badge.style.display = 'none';
+  if (dropdown) dropdown.style.display = 'none';
+  goTo('s9');
+}
+
+function openPanel() {
+  document.getElementById('panel-overlay').style.display = 'block';
+  setTimeout(() => document.getElementById('order-panel').classList.add('open'), 10);
+}
+function closePanel() {
+  document.getElementById('order-panel').classList.remove('open');
+  setTimeout(() => document.getElementById('panel-overlay').style.display = 'none', 300);
+}
+
+function generateGuide() {
+  closePanel();
+  setTimeout(() => {
+    showToast('Guía generada exitosamente');
+    const badge = document.getElementById('order-status-badge');
+    if (badge) { badge.className = 'badge badge-blue'; badge.innerHTML = '<span style="width:6px;height:6px;border-radius:50%;background:#3b82f6;display:inline-block;"></span> Guía generada'; }
+    const printed = document.getElementById('order-printed');
+    if (printed) printed.textContent = 'Sí';
+    document.getElementById('s9-banner-initial').style.display = 'none';
+    document.getElementById('s9-banner-next').style.display = 'flex';
+    checklistState[2] = true;
+  }, 350);
+}
+
+function goToPickup() {
+  goTo('s10');
+}
+
+function confirmPickup() {
+  const cta = document.getElementById('s10-cta');
+  if (cta) { cta.disabled = true; cta.innerHTML = 'Confirmando... <i class="ri-loader-4-line"></i>'; }
+  const succ = document.getElementById('s10-success');
+  if (succ) { succ.style.display = 'flex'; }
+  checklistState[3] = true;
+  setTimeout(() => goTo('s11'), 1500);
+}
+
+function validateIdentity() {
+  const cta = document.getElementById('s11-cta');
+  if (cta) { cta.disabled = true; cta.innerHTML = 'Verificando... <i class="ri-loader-4-line"></i>'; }
+  setTimeout(() => {
+    checklistState[4] = true;
+    goTo('s12');
+  }, 1200);
+}
+
+function goToHomeComplete() {
+  homeMode = 'active';
+  checklistState = [true, true, true, true, true];
+  renderChecklist();
+  const badge = document.getElementById('notif-badge');
+  if (badge) badge.style.display = 'none';
+  goTo('s8');
+}
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const screen = document.getElementById(id);
+  if (screen) screen.classList.add('active');
+  if (id === 's7') animateCounter();
+  if (id === 's8') {
+    if (homeMode !== 'inactive') homeMode = 'active';
+    const n = document.getElementById('store-input');
+    const name = (n && n.value.trim()) ? n.value.trim() : 'Moda Urbana CO';
+    document.getElementById('home-name').textContent = name;
+    renderHomeMode();
+    renderChecklist();
+  }
+  if (id === 's9') {
+    const n = document.getElementById('store-input');
+    const s9name = document.getElementById('s9-store-name');
+    if (s9name && n) s9name.textContent = n.value.trim() || 'Moda Urbana CO';
+    // reset s10 CTA if coming back
+    const cta = document.getElementById('s10-cta');
+    if (cta) { cta.disabled = false; cta.innerHTML = 'Confirmar recolección <i class="ri-arrow-right-line"></i>'; }
+  }
+  if (id === 's11') {
+    const cta = document.getElementById('s11-cta');
+    if (cta) { cta.disabled = false; cta.innerHTML = 'Validar y activar pagos <i class="ri-shield-check-line"></i>'; }
+  }
+  window.scrollTo(0, 0);
+}
+
+function selectModal(el) {
+  el.closest('.modal').querySelectorAll('.modal-option').forEach(o => {
+    o.classList.remove('selected');
+    o.querySelector('input').checked = false;
+  });
+  el.classList.add('selected');
+  el.querySelector('input').checked = true;
+}
+
+function livePreview(val) {
+  const pn = document.getElementById('prev-name');
+  const pa = document.getElementById('prev-avatar');
+  if (val.trim()) {
+    pn.textContent = val;
+    pa.textContent = val.charAt(0).toUpperCase();
+  } else {
+    pn.textContent = 'Tu tienda aquí';
+    pa.textContent = '?';
+  }
+}
+
+function toggleCarrier(chip, id) {
+  chip.classList.toggle('selected');
+  const el = document.getElementById(id);
+  if (el) el.style.display = chip.classList.contains('selected') ? 'flex' : 'none';
+  updateWarehousePreview();
+}
+
+function updateWarehousePreview() {
+  // Nombre
+  const nameInput = document.querySelector('#s5 input[placeholder="Bodega Principal"]');
+  const nameEl = document.getElementById('prev-warehouse-name');
+  if (nameEl && nameInput) nameEl.textContent = nameInput.value.trim() || 'Bodega Principal';
+
+  // Ubicación
+  const city = document.querySelector('#s5 select:nth-of-type(2)');
+  const dept = document.querySelector('#s5 select:nth-of-type(1)');
+  const locEl = document.getElementById('prev-location');
+  if (locEl) {
+    const c = city ? city.options[city.selectedIndex].text : 'Bogotá';
+    const d = dept ? dept.options[dept.selectedIndex].text : 'Cundinamarca';
+    locEl.textContent = c + ', ' + d;
+  }
+
+  // Dirección
+  const addrInput = document.querySelector('#s5 input[placeholder="Calle 123 # 45-67"]');
+  const addrEl = document.getElementById('prev-address');
+  if (addrEl && addrInput) addrEl.textContent = addrInput.value.trim() || '—';
+
+  // Transportadoras
+  const carriersEl = document.getElementById('prev-carriers');
+  if (carriersEl) {
+    const active = [];
+    document.querySelectorAll('#s5 .chip.selected').forEach(c => {
+      const name = c.textContent.replace(/—.*/, '').trim();
+      if (name) active.push(name);
+    });
+    carriersEl.innerHTML = active.length
+      ? active.map(n => '<span class="prev-carrier-tag">' + n + '</span>').join('')
+      : '<span style="font-size:12px;color:var(--text-3)">Ninguna seleccionada</span>';
+  }
+}
+
+// Wire up live sync for warehouse fields
+document.addEventListener('DOMContentLoaded', () => {
+  const s5 = document.getElementById('s5');
+  if (s5) {
+    s5.querySelectorAll('input, select').forEach(el => {
+      el.addEventListener('input', updateWarehousePreview);
+      el.addEventListener('change', updateWarehousePreview);
+    });
+  }
+});
+
+function switchProdTab(btn, tabId) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  ['pt-general','pt-stock','pt-garantia','pt-masivo'].forEach(t => {
+    const el = document.getElementById(t);
+    if (el) el.style.display = t === tabId ? 'block' : 'none';
+  });
+}
+
+function switchProdTabByName(tabId) {
+  const tabs = ['pt-general','pt-stock','pt-garantia','pt-masivo'];
+  const btns = document.querySelectorAll('.tab-btn');
+  tabs.forEach((t, i) => {
+    const el = document.getElementById(t);
+    if (el) el.style.display = t === tabId ? 'block' : 'none';
+    if (btns[i]) btns[i].classList.toggle('active', t === tabId);
+  });
+}
+
+function triggerImgUpload() { document.getElementById('img-input').click(); }
+
+function previewImg(input) {
+  if (!input.files || !input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const zone = document.getElementById('img-zone');
+    zone.innerHTML = '<img src="' + e.target.result + '" style="width:100%;height:100%;object-fit:cover;border-radius:var(--radius-md);">';
+    zone.style.padding = '0';
+    zone.style.border = 'none';
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function toggleGuarantee(toggleEl, itemId) {
+  const item = document.getElementById(itemId);
+  const dot = toggleEl.querySelector('.guarantee-toggle-dot');
+  const fields = item.querySelector('.guarantee-fields');
+  const isOn = toggleEl.dataset.on !== 'false';
+  if (isOn) {
+    toggleEl.dataset.on = 'false';
+    toggleEl.style.background = 'var(--border-2)';
+    dot.style.right = '18px';
+    fields.style.opacity = '0.35';
+    fields.querySelectorAll('input,select').forEach(el => el.disabled = true);
+  } else {
+    toggleEl.dataset.on = 'true';
+    toggleEl.style.background = 'var(--orange)';
+    dot.style.right = '2px';
+    fields.style.opacity = '1';
+    fields.querySelectorAll('input,select').forEach(el => el.disabled = false);
+  }
+}
+
+function animateCounter() {
+  const el = document.getElementById('counter');
+  if (!el) return;
+  const target = 1847;
+  let current = 0;
+  const step = Math.ceil(target / 60);
+  const iv = setInterval(() => {
+    current = Math.min(current + step, target);
+    el.textContent = current.toLocaleString('es-CO');
+    if (current >= target) clearInterval(iv);
+  }, 20);
+}
+</script>
+</body>
+</html>

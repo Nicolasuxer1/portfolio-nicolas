@@ -24,4 +24,5 @@ export type FeatureSection =
   | { type: "metrics"; items: { label: string; value: string }[] }
   | { type: "quote"; content: string; attribution?: string }
   | { type: "image-full"; src: string; caption?: string }
-  | { type: "list"; title: string; items: string[] };
+  | { type: "list"; title: string; items: string[] }
+  | { type: "grid"; items: { title: string; description: string }[] };

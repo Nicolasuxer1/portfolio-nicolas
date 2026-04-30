@@ -2,7 +2,18 @@ import type { Project } from "@/types";
 
 export const projects: Project[] = [
   {
-    id: "kanut",
+    id: "dropi",
+    title: "Dropi — Product Design Challenge",
+    description:
+      "Redesigning brand activation for a multilateral logistics platform in LATAM. Moving activation rate from <20% to 45% through experience design and communication strategy — without changing the core product architecture.",
+    status: "done",
+    coverImage: "/dropi/cover.webp",
+    context: "",
+    role: "",
+    features: [],
+  },
+  {
+    id: "client-portal",
     title: "Client Portal SaaS Platform",
     description:
       "The Client Portal is a secure web platform that allows distributors and clients to access product information, request quotations, and retrieve account-related documents such as invoices and manuals.",
@@ -213,173 +224,237 @@ export const projects: Project[] = [
     ],
   },
   {
-    id: "linktic-design-system",
-    title: "Enterprise Design System — LinkTIC",
+    id: "kanut-project",
+    title: "Kanut — Greenhouse Software Manager",
     description:
-      "Building and scaling a shared design system across multiple enterprise platforms with conflicting requirements, legacy codebases, and government-grade accessibility standards.",
-    status: "live",
-    coverImage: "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800&q=75",
+      "A SaaS platform designed to help greenhouse operators monitor, manage, and automate their production environments through real-time data and control systems.",
+    status: "done",
+    coverImage: "/images/client-portal-cover.png",
     context:
-      "LinkTIC delivers digital platforms for some of Colombia's largest public institutions — IDEAM, Acueducto de Bogotá, Findeter, Fiscalía, Positiva. Before this project, each client platform was designed and built in isolation, creating inconsistent experiences and massive rework with each new engagement.",
-    role: "UX/UI Designer at LinkTIC (Nov 2021 – Dec 2024) · Colombia. Led the design system initiative from proposal to adoption across 5+ active client projects. Mentored junior designers and served as the design-to-engineering bridge in Scrum-based delivery cycles.",
+      `Greenspec needed to evolve from a fragmented set of tools into a unified platform where operators could monitor environmental variables (temperature, humidity, CO₂, light), control greenhouse systems remotely, and access operational data in real time.
+
+      The existing experience was fragmented across tools, difficult to understand, and not aligned with user mental models. Additionally, most users were non-technical operators, making clarity and usability critical.`,
+    role: "UX/UI Designer at Greenspec (2025 – Present). Led end-to-end product design, defined information architecture, built component logic and UI system, designed core dashboards and interaction patterns, and worked closely with developers in an agile environment.",
     features: [
       {
-        id: "token-foundation",
-        title: "Design Token Architecture",
+        id: "navigation-system",
+        title: "Navigation System & Information Architecture Redesign",
         description:
-          "A semantic token system that separates primitive values from contextual usage, enabling theming across multiple client brands without duplicating components.",
-        status: "shipped",
+          "A layered navigation model that introduced portal functionality without disrupting existing user mental models keeping the top navbar intact and adding a minimal sidebar for operational features.",
+        status: "done",
         sections: [
           {
             type: "text",
-            title: "The problem",
+            title: "Context",
             content:
-              "Every client engagement started from scratch. Designers were copying and modifying components from previous projects by hand, introducing drift and errors. There was no source of truth.",
+              "Kanut had evolved into a powerful system connecting sensors, devices, and controls across greenhouse operations. However, its structure had grown organically, resulting in a fragmented experience where users struggled to locate data, navigate between modules, and execute actions efficiently.",
+          },
+          {
+            type: "highlight",
+            content:
+              "68% of operational actions were still performed manually due to lack of clear system structure. Operators spent up to 60% of their time navigating between tools instead of acting on data.",
           },
           {
             type: "text",
-            title: "The solution",
+            title: "User Insight",
             content:
-              "A two-layer token model: primitives (raw values) and semantic tokens (contextual meaning). Each client brand overrides only the primitive layer — all semantic tokens and component logic remain shared.",
-          },
-          {
-            type: "image",
-            src: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=1600&q=80",
-            caption: "Semantic tokens enabled multi-brand theming",
-          },
-          {
-            type: "text",
-            title: "Key decisions",
-            content:
-              "We debated building per-client component libraries vs a single shared system. Per-client was faster to start but would have multiplied maintenance. The shared system required upfront alignment across project leads, but paid off by the third engagement — new clients were deliverable in 40% less setup time.",
-          },
-          {
-            type: "metrics",
-            items: [
-              { label: "Client projects adopted", value: "5+" },
-              { label: "Setup time reduction", value: "40%" },
-              { label: "Launch timeline", value: "6 mo." },
-            ],
-          },
-          {
-            type: "text",
-            title: "Outcome",
-            content:
-              "The token system was adopted across 5 active client projects within 6 months of launch. Rework from inconsistency dropped significantly across sprint reviews.",
-          },
-        ],
-      },
-      {
-        id: "component-library",
-        title: "Shared Component Library",
-        description:
-          "A Figma component library of 80+ components — forms, tables, navigation, dashboards — with auto-layout, variant properties, and documented usage guidelines.",
-        status: "shipped",
-        sections: [
-          {
-            type: "text",
-            title: "The problem",
-            content:
-              "Junior designers were rebuilding common UI patterns from scratch on each project, leading to visual inconsistency and slow delivery. There was no documentation on when to use which pattern.",
-          },
-          {
-            type: "text",
-            title: "The solution",
-            content:
-              "A structured Figma library organized by domain (forms, data display, navigation, feedback) with component variants, interaction states, and usage notes embedded directly in the file.",
-          },
-          {
-            type: "text",
-            title: "Key decisions",
-            content:
-              "Documentation was written as embedded Figma annotations rather than a separate Notion wiki. This kept usage guidance visible at the point of design decision, not buried in a tool designers had to separately open.",
-          },
-          {
-            type: "image",
-            src: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?w=1600&q=80",
-            caption: "Shared components reduced repetitive design work",
+              "Through interviews and observation sessions with expert users, a key pattern emerged: even highly technical users felt constrained by the system. Navigation was not aligned with their mental model of greenhouse operations, forcing them to adapt to the tool instead of the tool adapting to them.",
           },
           {
             type: "quote",
             content:
-              "Having the component library meant I could focus on solving the user problem, not rebuilding a dropdown for the third time.",
-            attribution: "Junior designer, LinkTIC",
+              "Sometimes I just need to compare two variables, but I have to go through too many menus.",
           },
           {
             type: "text",
-            title: "Outcome",
+            title: "Problem",
             content:
-              "New project setup time dropped from approximately 2 weeks to 3 days. Junior designers reported significantly higher confidence in component decisions.",
+              "The core issue was not the lack of functionality, but the lack of structure. Information was dispersed, entry points were unclear, and there was no consistent way to move between monitoring, control, and analysis tasks.",
           },
-        ],
-      },
-      {
-        id: "accessibility",
-        title: "WCAG 2.1 AA Compliance Layer",
-        description:
-          "A compliance audit and remediation process applied across all active client platforms, with WCAG 2.1 AA requirements built into the component system as non-negotiable defaults.",
-        status: "shipped",
-        sections: [
           {
             type: "text",
-            title: "The problem",
+            title: "Business Impact",
             content:
-              "Several client projects — particularly government platforms — had legal accessibility requirements that were being handled reactively, discovered during QA or client review rather than addressed in design.",
+              "This fragmentation directly affected operational efficiency. Slower access to critical data meant delayed decisions, increased manual work, and higher dependency on experienced users. This created scalability risks for Greenspec as they aimed to expand the platform.",
+          },
+          {
+            type: "text",
+            title: "Solution",
+            content:
+              "Instead of redesigning the entire system, I introduced a layered navigation model that separates concerns while preserving user familiarity. The solution combines an unchanged top navigation for global context with a new operational layer designed specifically for real-time decision making.",
           },
           {
             type: "image",
-            src: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1600&q=80",
-            caption: "Accessibility rules were embedded into the core system",
+            src: "/images/client-portal-feat-1-1.png",
+            caption: "Layered navigation model separating website navigation from operational workflows",
           },
           {
             type: "text",
-            title: "The solution",
+            title: "Design Decisions",
             content:
-              "Accessibility requirements were embedded into component documentation as design constraints: minimum contrast ratios, required focus states, touch target minimums, and keyboard navigation flows defined before any implementation.",
+              "Several key decisions shaped the solution. First, preserving the existing top navigation reduced relearning costs for returning users. Second, introducing a persistent sidebar created a dedicated operational space without interfering with browsing behavior. Third, avoiding nested navigation ensured fast access and reduced cognitive load during critical tasks.",
+          },
+          {
+            type: "grid",
+            items: [
+              {
+                title: "Preserve Familiarity",
+                description: "Maintained existing navigation to avoid disrupting learned behaviors",
+              },
+              {
+                title: "Separate Contexts",
+                description: "Website navigation vs operational workflows clearly divided",
+              },
+              {
+                title: "Reduce Cognitive Load",
+                description: "Flat structure with no deep nesting",
+              },
+            ],
           },
           {
             type: "text",
-            title: "Key decisions",
+            title: "Interaction Model",
             content:
-              "We made AA compliance the default rather than an option. Some designers pushed back on contrast requirements affecting brand colors. The decision was to either adjust the palette or create a compliant accent — never to ship below AA on a government-facing product.",
+              "The sidebar was designed to remain collapsed by default, showing only icons to reduce visual noise. On hover, it expands temporarily, allowing access to labels without permanently occupying space. This interaction balances discoverability and efficiency.",
+          },
+          {
+            type: "image",
+            src: "/images/projects/kanut/sidebar-interaction.png",
+            caption: "Collapsed sidebar expanding on hover to optimize space and clarity",
+          },
+          {
+            type: "text",
+            title: "Responsive Adaptation",
+            content:
+              "On mobile, the navigation system shifts from structural separation to positional clarity. A bottom navigation bar handles operational features, while the top navigation retains global access. This ensures usability without overloading limited screen space.",
+          },
+          {
+            type: "image",
+            src: "/images/projects/kanut/mobile-navigation.png",
+            caption: "Mobile navigation separates contexts by position instead of structure",
           },
           {
             type: "text",
             title: "Outcome",
             content:
-              "Zero accessibility rejections in the final government client audits that followed system adoption. Compliance review time dropped by approximately 70% because issues were caught at the design stage.",
+              "The redesigned navigation significantly improved task efficiency and reduced friction. Users were able to locate key modules faster, navigate with more confidence, and complete workflows with fewer steps.",
+          },
+          {
+            type: "metrics",
+            items: [
+              { label: "Task success rate", value: "93%" },
+              { label: "Time improvement", value: "42% faster" },
+              { label: "Navigation errors", value: "-35%" },
+            ],
+          },
+          {
+            type: "text",
+            title: "Key Insight",
+            content:
+              "The problem was not adding more features, but structuring access to them. By aligning navigation with how users think about their work, the system shifted from being a tool they had to learn to one that supports how they operate.",
           },
         ],
       },
       {
-        id: "handoff-process",
-        title: "Developer Handoff Process",
+        id: "sensor-dashboard",
+        title: "Sensor Monitoring Dashboard",
         description:
-          "A structured handoff workflow — annotations, redlines, component mapping — that reduced clarification cycles and gave engineers a clear implementation reference.",
+          "A status-driven dashboard where each sensor is represented as a card with visual hierarchy based on system state — Normal, Warning, or Critical — enabling fast scanning and instant issue identification.",
         status: "iteration",
         sections: [
           {
             type: "text",
             title: "The problem",
             content:
-              "Developers were making visual decisions at implementation time because specs were incomplete or ambiguous. This created gaps between designed and shipped experiences that had to be corrected in QA.",
+              "Operators were managing greenhouse data through spreadsheets, disconnected alerts, and multiple tools. There was no unified way to understand system status at a glance.",
+          },
+          {
+            type: "highlight",
+            content:
+              "When there is no single view of system state, operators lose time switching tools — and critical issues go unnoticed.",
           },
           {
             type: "text",
             title: "The solution",
             content:
-              "A standardized handoff checklist with required annotations per component type: spacing references, interactive states, edge cases, and responsive behavior. Each delivery includes a Figma prototype and a component-to-code mapping table.",
+              "A status-driven dashboard where each sensor is represented as a card. Visual hierarchy is based on system state: Normal, Warning, or Critical. Users can scan all zones quickly, identify issues instantly, and drill down only when necessary.",
           },
           {
-            type: "image",
-            src: "https://images.unsplash.com/photo-1553877522-43269d4ea984?w=1600&q=80",
-            caption: "Clear handoff artifacts reduced implementation ambiguity",
+            type: "list",
+            title: "Key decisions",
+            items: [
+              "Prioritized status over charts for the primary view",
+              "Moved historical data to secondary screens",
+              "Designed for fast scanning, not deep analysis",
+            ],
+          },
+          {
+            type: "list",
+            title: "Outcome",
+            items: [
+              "Faster anomaly detection",
+              "Reduced time to identify critical issues",
+              "Improved operational awareness across all zones",
+            ],
+          },
+        ],
+      },
+      {
+        id: "alert-system",
+        title: "Alert System",
+        description:
+          "A tiered alert model that separates informational updates from actionable warnings and critical failures, eliminating alert fatigue and improving operator response to real issues.",
+        status: "to-do",
+        sections: [
+          {
+            type: "text",
+            title: "The problem",
+            content:
+              "The previous alert system sent identical notifications for all events, regardless of severity. This generated alert fatigue — operators had stopped opening notifications entirely, missing genuine failures.",
+          },
+          {
+            type: "highlight",
+            content:
+              "When everything is urgent, nothing is. Alert fatigue is a design problem, not a user problem.",
           },
           {
             type: "text",
-            title: "Key decisions",
+            title: "The solution",
             content:
-              "The first version of the process was too detailed — designers were spending more time on annotations than design. We trimmed the checklist to only the decisions that had historically caused back-and-forth, and moved obvious specs to the component documentation layer instead.",
+              "A three-tier alert model: Info (passive logging), Warning (batched notifications), and Critical (persistent, requires manual acknowledgment). Each tier has distinct visual and behavioral treatment to reinforce its severity.",
+          },
+          {
+            type: "list",
+            title: "Key decisions",
+            items: [
+              "Delay push notifications until system maturity",
+              "Focus first on in-app clarity",
+              "Prioritize signal over volume",
+            ],
+          },
+          {
+            type: "list",
+            title: "Outcome",
+            items: [
+              "Increased alert engagement",
+              "Reduced notification noise",
+              "Improved response to critical events",
+            ],
+          },
+          {
+            type: "list",
+            title: "Design principles",
+            items: [
+              "Clarity over complexity",
+              "Status-driven decision making",
+              "Progressive disclosure",
+              "Respect for existing user behavior",
+            ],
+          },
+          {
+            type: "highlight",
+            content:
+              "Designing Kanut was not about creating new interfaces — it was about translating complex systems into decisions that operators can understand instantly. The challenge wasn't the data — it was making it actionable.",
           },
         ],
       },

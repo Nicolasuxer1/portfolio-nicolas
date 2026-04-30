@@ -100,6 +100,27 @@ export default function FeatureSectionRenderer({ section }: Props) {
     );
   }
 
+  // ── grid ──────────────────────────────────────────────────────────────────
+  if (section.type === "grid") {
+    return (
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+        {section.items.map((item) => (
+          <div
+            key={item.title}
+            className="flex flex-col gap-2 rounded-xl border border-border bg-surface px-5 py-5"
+          >
+            <span className="text-sm font-semibold text-text-primary">
+              {item.title}
+            </span>
+            <span className="text-sm leading-relaxed text-text-secondary">
+              {item.description}
+            </span>
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   // ── image-full ────────────────────────────────────────────────────────────
   if (section.type === "image-full") {
     return (
