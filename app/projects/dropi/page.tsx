@@ -102,17 +102,50 @@ function StatBlock({ stat, description, source }: { stat: string; description: s
   );
 }
 
-function Carousel({ images, interval = 4000 }: { images: string[]; interval?: number }) {
+type CarouselPhase = "before" | "after";
+
+type CarouselSlide = {
+  src: string;
+  phase: CarouselPhase;
+};
+
+function PhaseTag({ phase }: { phase: CarouselPhase }) {
+  const isBefore = phase === "before";
+  return (
+    <span
+      className="inline-flex items-center rounded-[4px] px-3 py-1 text-xs font-semibold uppercase tracking-wide"
+      style={
+        isBefore
+          ? {
+              color: "rgb(254 226 226)",
+              backgroundColor: "rgb(127 29 29)",
+              border: "1px solid rgb(248 113 113)",
+            }
+          : {
+              color: "rgb(209 250 229)",
+              backgroundColor: "rgb(6 78 59)",
+              border: "1px solid rgb(52 211 153)",
+            }
+      }
+    >
+      {isBefore ? "Before" : "After"}
+    </span>
+  );
+}
+
+function Carousel({ slides, interval = 4000 }: { slides: CarouselSlide[]; interval?: number }) {
   const [index, setIndex] = useState(0);
   const [paused, setPaused] = useState(false);
-  const prev = () => setIndex((i) => (i - 1 + images.length) % images.length);
-  const next = () => setIndex((i) => (i + 1) % images.length);
+  const prev = () => setIndex((i) => (i - 1 + slides.length) % slides.length);
+  const next = () => setIndex((i) => (i + 1) % slides.length);
 
   useEffect(() => {
     if (paused) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % images.length), interval);
+    const id = setInterval(() => setIndex((i) => (i + 1) % slides.length), interval);
     return () => clearInterval(id);
-  }, [paused, images.length, interval]);
+  }, [paused, slides.length, interval]);
+
+  const current = slides[index];
 
   return (
     <div className="flex flex-col gap-3">
@@ -121,8 +154,11 @@ function Carousel({ images, interval = 4000 }: { images: string[]; interval?: nu
         onMouseEnter={() => setPaused(true)}
         onMouseLeave={() => setPaused(false)}
       >
+        <div className="absolute left-3 top-3 z-10">
+          <PhaseTag phase={current.phase} />
+        </div>
         <img
-          src={images[index]}
+          src={current.src}
           alt={`Slide ${index + 1}`}
           className="w-full object-contain"
           style={{ maxHeight: 520 }}
@@ -143,13 +179,19 @@ function Carousel({ images, interval = 4000 }: { images: string[]; interval?: nu
         </button>
       </div>
       <div className="flex items-center justify-center gap-2">
-        {images.map((_, i) => (
+        {slides.map((slide, i) => (
           <button
             key={i}
+            type="button"
             onClick={() => setIndex(i)}
-            className="h-1.5 rounded-full transition-all"
-            style={{ width: i === index ? 20 : 6, background: i === index ? "#ff6f00" : "var(--color-border)" }}
-            aria-label={`Go to slide ${i + 1}`}
+            title={slide.phase === "before" ? "Before" : "After"}
+            className="h-1.5 shrink-0 rounded-[4px] transition-[width,background-color] duration-200"
+            style={{
+              width: i === index ? 20 : 6,
+              backgroundColor:
+                i === index ? "#ff6f00" : "rgb(var(--text-secondary))",
+            }}
+            aria-label={`Go to slide ${i + 1} (${slide.phase})`}
           />
         ))}
       </div>
@@ -449,12 +491,12 @@ export default function DropiPage() {
               after="3 questions + real-time preview. The brand comes to life before the first form."
             />
             <Carousel
-              images={[
-                "/dropi/momento1/m1.jpg",
-                "/dropi/momento1/m2.jpg",
-                "/dropi/momento1/m3.jgp.png",
-                "/dropi/momento1/m4.jpg",
-                "/dropi/momento1/m5.jpg",
+              slides={[
+                { src: "/dropi/momento1/m1.jpg", phase: "before" },
+                { src: "/dropi/momento1/m2.jpg", phase: "before" },
+                { src: "/dropi/momento1/m3.jgp.png", phase: "before" },
+                { src: "/dropi/momento1/m4.jpg", phase: "before" },
+                { src: "/dropi/momento1/m5.jpg", phase: "after" },
               ]}
             />
             <Divider />
@@ -476,11 +518,11 @@ export default function DropiPage() {
               after="Activation no longer starts after registration. It's part of it."
             />
             <Carousel
-              images={[
-                "/dropi/momento2/m2.1.jpg",
-                "/dropi/momento2/m2.2.jpg",
-                "/dropi/momento2/m2.3.jpg",
-                "/dropi/momento2/m2.4.jpg",
+              slides={[
+                { src: "/dropi/momento2/m2.1.jpg", phase: "before" },
+                { src: "/dropi/momento2/m2.2.jpg", phase: "before" },
+                { src: "/dropi/momento2/m2.3.jpg", phase: "after" },
+                { src: "/dropi/momento2/m2.4.jpg", phase: "after" },
               ]}
             />
             <Divider />

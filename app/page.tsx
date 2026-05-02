@@ -5,11 +5,13 @@ import AboutSection from "@/components/AboutSection";
 import ExperienceSection from "@/components/ExperienceSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import ParticleBackground from "@/components/ParticleBackground";
 import { projects } from "@/data/projects";
 
 export default function Home() {
   return (
     <>
+      <ParticleBackground />
       <main>
         {/* ── Hero ───────────────────────────────────── */}
         <Hero />

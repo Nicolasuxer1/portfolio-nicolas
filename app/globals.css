@@ -91,7 +91,7 @@
   }
 
   body {
-    @apply bg-canvas text-text-primary font-sans antialiased;
+    @apply text-text-primary font-sans antialiased;
   }
 
   *:focus-visible {

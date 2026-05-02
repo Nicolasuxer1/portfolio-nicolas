@@ -6,7 +6,7 @@ type Props = {
   params: { id: string };
 };
 
-const CUSTOM_PAGES = new Set(["dropi"]);
+const CUSTOM_PAGES = new Set(["dropi", "kanut"]);
 
 export function generateStaticParams() {
   return projects
