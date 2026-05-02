@@ -1,24 +1,22 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import Link from "next/link";
 
 /* ─── Sub-components ────────────────────────────────────────────────────── */
 
-function SectionNum({ n }: { n: string }) {
+function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <span className="mb-3 block font-mono text-xs font-medium tracking-widest" style={{ color: "#ff6f00" }}>
-      {n}
-    </span>
+    <h2 className="mb-2 text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">
+      {children}
+    </h2>
   );
 }
 
-function SectionTitle({ children }: { children: React.ReactNode }) {
+function SectionSubtitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="mb-6 text-2xl font-semibold tracking-tight text-text-primary sm:text-3xl">
-      {children}
-    </h2>
+    <p className="text-base font-medium text-text-muted">{children}</p>
   );
 }
 
@@ -63,31 +61,98 @@ function Table({ headers, rows }: { headers: string[]; rows: string[][] }) {
   );
 }
 
-function InsightCard({ n, title, insight, implication }: { n: string; title: string; insight: string; implication: string }) {
+function MomentHeader({ number, label, question }: { number: string; label: string; question: string }) {
   return (
-    <div className="rounded-xl border border-border bg-surface p-5">
-      <div className="mb-3 flex items-start gap-3">
-        <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full text-xs font-bold text-white" style={{ background: "#ff6f00" }}>
-          {n}
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center gap-3">
+        <span className="rounded-full px-3 py-1 text-xs font-bold text-white" style={{ background: "#ff6f00" }}>
+          Moment {number}
         </span>
-        <p className="text-sm font-medium leading-snug text-text-primary">{title}</p>
+        <span className="text-base font-semibold text-text-primary">{label}</span>
       </div>
-      <p className="mb-2 text-sm leading-relaxed text-text-secondary">{insight}</p>
-      <p className="text-xs leading-relaxed text-text-muted">→ {implication}</p>
+      <p className="text-sm italic text-text-muted">
+        <span className="font-medium not-italic text-text-secondary">Key question: </span>{question}
+      </p>
     </div>
   );
 }
 
-function MomentCard({ number, label, children }: { number: string; label: string; children: React.ReactNode }) {
+function BeforeAfter({ before, after }: { before: string; after: string }) {
   return (
-    <div className="relative rounded-xl border border-border bg-surface p-6">
-      <div className="mb-1 flex items-center gap-3">
-        <span className="rounded-full px-2.5 py-0.5 text-xs font-semibold text-white" style={{ background: "#ff6f00" }}>
-          Momento {number}
-        </span>
-        <span className="text-sm font-semibold text-text-primary">{label}</span>
+    <div className="grid gap-3 sm:grid-cols-2">
+      <div className="rounded-xl border border-border bg-surface p-4">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">Before</p>
+        <p className="text-sm leading-relaxed text-text-secondary">{before}</p>
       </div>
-      <div className="mt-3 text-sm leading-relaxed text-text-secondary">{children}</div>
+      <div className="rounded-xl border p-4" style={{ borderColor: "rgba(255,111,0,0.4)", background: "rgba(255,111,0,0.04)" }}>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider" style={{ color: "#ff6f00" }}>After</p>
+        <p className="text-sm leading-relaxed text-text-secondary">{after}</p>
+      </div>
+    </div>
+  );
+}
+
+function StatBlock({ stat, description, source }: { stat: string; description: string; source: string }) {
+  return (
+    <div className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-5">
+      <p className="text-2xl font-bold" style={{ color: "#ff6f00" }}>{stat}</p>
+      <p className="text-sm leading-relaxed text-text-secondary">{description}</p>
+      <p className="text-xs text-text-muted">Source: {source}</p>
+    </div>
+  );
+}
+
+function Carousel({ images, interval = 4000 }: { images: string[]; interval?: number }) {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const prev = () => setIndex((i) => (i - 1 + images.length) % images.length);
+  const next = () => setIndex((i) => (i + 1) % images.length);
+
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(() => setIndex((i) => (i + 1) % images.length), interval);
+    return () => clearInterval(id);
+  }, [paused, images.length, interval]);
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div
+        className="relative overflow-hidden rounded-xl border border-border bg-black"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        <img
+          src={images[index]}
+          alt={`Slide ${index + 1}`}
+          className="w-full object-contain"
+          style={{ maxHeight: 520 }}
+        />
+        <button
+          onClick={prev}
+          className="absolute left-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-colors hover:bg-black/80"
+          aria-label="Previous"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 18l-6-6 6-6" /></svg>
+        </button>
+        <button
+          onClick={next}
+          className="absolute right-3 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-colors hover:bg-black/80"
+          aria-label="Next"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 18l6-6-6-6" /></svg>
+        </button>
+      </div>
+      <div className="flex items-center justify-center gap-2">
+        {images.map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setIndex(i)}
+            className="h-1.5 rounded-full transition-all"
+            style={{ width: i === index ? 20 : 6, background: i === index ? "#ff6f00" : "var(--color-border)" }}
+            aria-label={`Go to slide ${i + 1}`}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -185,14 +250,15 @@ export default function DropiPage() {
 
             <motion.div variants={fade}>
               <h1 className="text-balance text-4xl font-semibold leading-tight tracking-tight text-white sm:text-5xl lg:text-6xl">
-                Dropi —<br />Transforming Brand Activation
+                Activation is not<br />configuration.
               </h1>
+              <p className="mt-4 text-lg text-white/50">A strategy to increase brand activation rates at Dropi</p>
             </motion.div>
 
             <motion.div variants={fade} className="flex flex-wrap gap-6 border-t border-white/10 pt-6 text-sm text-white/50">
               <div><span className="block text-white/30 text-xs uppercase tracking-wider mb-1">Role</span>Senior Product Designer (End-to-End)</div>
               <div><span className="block text-white/30 text-xs uppercase tracking-wider mb-1">Duration</span>4 days</div>
-              <div><span className="block text-white/30 text-xs uppercase tracking-wider mb-1">Scope</span>Research · Strategy · UX · Measurement</div>
+              <div><span className="block text-white/30 text-xs uppercase tracking-wider mb-1">Scope</span>Research · Strategy · UX · Measurement · Project Plan</div>
               <div><span className="block text-white/30 text-xs uppercase tracking-wider mb-1">Status</span>Completed challenge</div>
             </motion.div>
 
@@ -203,7 +269,7 @@ export default function DropiPage() {
                   <span style={{ color: "#ff6f00" }}>fewer than 20 ever became active.</span>
                 </p>
                 <p className="mt-4 text-sm leading-relaxed text-white/60">
-                  An 80%+ loss of potential ecosystem value — not from a product that doesn&apos;t work, but from an experience that fails to communicate why it matters. This case study documents how I approached that problem.
+                  An 80%+ loss of potential ecosystem value. Not from a product that doesn&apos;t work, but from an experience that fails to communicate why it matters. This case study documents how I approached that problem.
                 </p>
               </div>
             </motion.div>
@@ -221,303 +287,304 @@ export default function DropiPage() {
           className="flex flex-col gap-20"
         >
 
-          {/* 01 · Ecosystem */}
+          {/* Before assuming causes, I had to live it. */}
           <motion.section variants={fade} className="flex flex-col gap-6">
             <div>
-              <SectionNum n="01" />
-              <SectionTitle>Understanding the Ecosystem</SectionTitle>
-              <p className="text-sm leading-relaxed text-text-secondary">
-                Dropi is a multilateral logistics platform connecting four types of participants in a single ecosystem.
+              <SectionTitle>Before assuming causes, I had to live it.</SectionTitle>
+              <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+                Before proposing anything, I went through the registration flow as a new brand. The frustration wasn&apos;t theoretical. It was structural.
               </p>
             </div>
+            <div className="flex flex-col gap-3 rounded-xl border border-border bg-surface p-5">
+              {[
+                "Why does every step open a new tab? Am I outside the app?",
+                "What does activation mean? Can't I start selling right now?",
+                "I got the welcome email, but it doesn't feel like one. It's just plain text.",
+              ].map((quote) => (
+                <p key={quote} className="text-sm italic text-text-secondary">
+                  &ldquo;{quote}&rdquo;
+                </p>
+              ))}
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {[
+                ["6", "main tasks"],
+                ["45", "fields"],
+                ["40–50 min", "to complete"],
+                ["0", "perceived value"],
+              ].map(([num, label]) => (
+                <div key={label} className="flex flex-col gap-1 rounded-xl border border-border bg-surface p-4 text-center">
+                  <span className="text-xl font-bold" style={{ color: "#ff6f00" }}>{num}</span>
+                  <span className="text-xs text-text-muted">{label}</span>
+                </div>
+              ))}
+            </div>
+            <Divider />
+          </motion.section>
+
+          {/* The problem has a name. Two, actually. */}
+          <motion.section variants={fade} className="flex flex-col gap-6">
+            <div>
+              <SectionTitle>The problem has a name. Two, actually.</SectionTitle>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-border bg-surface p-5">
+                <p className="mb-2 text-sm font-bold text-text-primary">Onboarding</p>
+                <p className="text-sm leading-relaxed text-text-secondary">
+                  What happens in the first few minutes. Modals, preferences, welcome screen.{" "}
+                  <strong className="text-text-primary">It exists, but it doesn&apos;t prepare the user for what comes next.</strong>
+                </p>
+              </div>
+              <div className="rounded-xl border p-5" style={{ borderColor: "rgba(255,111,0,0.4)", background: "rgba(255,111,0,0.04)" }}>
+                <p className="mb-2 text-sm font-bold text-text-primary">Activation</p>
+                <p className="text-sm leading-relaxed text-text-secondary">
+                  The real process: 6 steps, 45 fields, 40–50 minutes. Presented as one continuous task{" "}
+                  <strong className="text-text-primary">when it should happen across 4 separate moments, each triggered by a real business event.</strong>
+                </p>
+              </div>
+            </div>
+            <Callout>
+              Rethinking activation doesn&apos;t mean simplifying it. It means separating it at the right moment.
+            </Callout>
+            <Divider />
+          </motion.section>
+
+          {/* The story of every brand that never came back */}
+          <motion.section variants={fade} className="flex flex-col gap-6">
+            <div>
+              <SectionTitle>The story of every brand that never came back</SectionTitle>
+              <SectionSubtitle>Six steps. A steady emotional decline. Not a single moment of return.</SectionSubtitle>
+            </div>
             <Table
-              headers={["Participant", "Role"]}
+              headers={["#", "Stage", "Action", "Thought", "State"]}
               rows={[
-                ["Suppliers", "Provide verified product inventory"],
-                ["Brands & Entrepreneurs", "Build their business, manage their catalog"],
-                ["Dropshippers", "Resell without owning inventory"],
-                ["Carriers", "Execute logistics and delivery"],
+                ["1", "Discovery", "Sees an ad, arrives at Dropi with expectations", '"This sounds good, I want to start selling"', "😊 Hopeful"],
+                ["2", "Registration + onboarding", "Completes preference modals", '"I guess at the end of this I can sell"', "😐 Neutral"],
+                ["3", "Finds the checklist", "Sees 6 steps with no context for why", '"Do I have to do all of this before I can sell?"', "🫥 Shocked"],
+                ["4", "Tries to complete", "Opens new tabs, fills 45 fields", '"When will I actually be able to sell?"', "😤 Frustrated"],
+                ["5", "Abandons or pushes through", "Closes the session. Doesn't return", '"Maybe this isn\'t for me. Maybe another app"', "😞 Exhausted"],
+                ["6", "Randomly checks email", "Dropi comes to mind again, but with no value", '"OK… that\'s it?"', "🫤 Disappointed"],
               ]}
             />
             <Callout>
-              <strong>The critical insight — the dependency chain:</strong>
-              <br /><br />
-              No active brands → no catalog → no dropshippers → no logistics volume → no carrier network.
-              <br /><br />
-              Brand activation isn&apos;t one feature among many. It&apos;s the first link in the entire chain of value.
+              The problem isn&apos;t the user. It&apos;s that we ask for everything, all at once, before giving them anything in return.
             </Callout>
             <Divider />
           </motion.section>
 
-          {/* 02 · Role */}
+          {/* The problem isn't the product */}
           <motion.section variants={fade} className="flex flex-col gap-6">
             <div>
-              <SectionNum n="02" />
-              <SectionTitle>My Role and Constraints</SectionTitle>
+              <SectionTitle>The problem isn&apos;t the product.</SectionTitle>
+              <SectionSubtitle>It&apos;s when and how we ask the user to trust us.</SectionSubtitle>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="rounded-xl border border-border bg-surface p-5">
-                <p className="mb-3 text-xs font-semibold uppercase tracking-wider" style={{ color: "#ff6f00" }}>What I owned</p>
-                <ul className="flex flex-col gap-2 text-sm text-text-secondary">
-                  {["End-to-end product strategy: research through solution design", "All UX decisions: onboarding flow, activation strategy, communication sequencing", "Stakeholder artifacts: documentation, rationale, handoff specs"].map((item) => (
-                    <li key={item} className="flex gap-2">
-                      <span className="mt-0.5 shrink-0 text-xs" style={{ color: "#ff6f00" }}>✓</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="rounded-xl border border-border bg-surface p-5">
-                <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-text-muted">What I explicitly did NOT own</p>
-                <ul className="flex flex-col gap-2 text-sm text-text-secondary">
-                  {["Backend logic or data architecture", "The existing business model or pricing", "Product catalog structure or carrier integrations"].map((item) => (
-                    <li key={item} className="flex gap-2">
-                      <span className="mt-0.5 shrink-0 text-xs text-text-muted">✕</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            <p className="text-sm leading-relaxed text-text-secondary">
-              The constraints shaped every decision. The goal was to dramatically improve activation without requiring engineering-heavy changes — which meant the leverage had to come from experience design, narrative reframing, and communication strategy.
-            </p>
-            <Divider />
-          </motion.section>
-
-          {/* 03 · Research */}
-          <motion.section variants={fade} className="flex flex-col gap-8">
-            <div>
-              <SectionNum n="03" />
-              <SectionTitle>The Research</SectionTitle>
+            <div className="rounded-xl border border-border bg-surface p-5">
               <p className="text-sm leading-relaxed text-text-secondary">
-                With a 4-day timeline, I built the analysis from three sources in parallel: funnel decomposition, competitive benchmarking, and first-principles reasoning using the 5 Whys framework.
+                Dropi&apos;s activation rate is below 20%. The SaaS average is 37.5%. The gap isn&apos;t in the features,{" "}
+                <strong className="text-text-primary">it&apos;s in the time to first perceived value.</strong>
               </p>
             </div>
-
-            <div className="flex flex-col gap-3">
-              <h3 className="text-base font-semibold text-text-primary">The Activation Funnel</h3>
-              <p className="text-sm text-text-secondary">The largest single drop — ~37% of all users — happens between onboarding and catalog configuration.</p>
-              <Table
-                headers={["Stage", "Users", "Conversion", "Primary Drop Cause"]}
-                rows={[
-                  ["Discovery / Visit", "100%", "—", "Entry point"],
-                  ["Account Registration", "100%", "~65%", "Too many fields, no progress indicator"],
-                  ["Initial Onboarding", "~65%", "~40%", "No immediate value shown"],
-                  ["Profile / Catalog Setup", "~40%", "~25%", "High friction: products, prices, logistics with no guidance"],
-                  ["First Sale / Activation", "~25%", "<20%", "No 'first success' mechanism or incentive to complete"],
-                ]}
+            <img
+              src="/dropi/image1.jpg"
+              alt="Drop-off funnel by stage"
+              className="w-full rounded-xl border border-border"
+            />
+            <div className="grid gap-4 sm:grid-cols-3">
+              <StatBlock
+                stat="75%"
+                description="of users abandon a product in the first week if onboarding doesn't meet their expectations."
+                source="Nielsen Norman Group"
               />
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <h3 className="text-base font-semibold text-text-primary">5 Whys — Root Cause Analysis</h3>
-              <div className="flex flex-col gap-2">
-                {[
-                  ["Why do less than 20% of brands activate?", "The process from registration to first real use is long, confusing, and offers no perceived reward."],
-                  ["Why is it confusing with no reward?", "Onboarding isn't designed to show immediate value or guide users toward an early success."],
-                  ["Why doesn't onboarding show immediate value?", "It's centered on platform configuration, not on the business outcomes the user is trying to achieve."],
-                  ["Why is it centered on configuration instead of outcomes?", "It was built from the platform's perspective, not the user's."],
-                  ["Root cause →", "The absence of a user research process that defined the 'aha moment' and specific quick wins for each brand profile. The platform was designed inside-out."],
-                ].map(([q, a], i) => (
-                  <div key={i} className={`rounded-lg p-4 ${i === 4 ? "border text-text-primary" : "bg-surface text-text-secondary"} text-sm`} style={i === 4 ? { borderColor: "#ff6f00", background: "rgba(255,111,0,0.05)" } : {}}>
-                    <p className={`font-medium ${i === 4 ? "" : "text-text-primary"} mb-1`}>{q}</p>
-                    <p className="leading-relaxed">{a}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <h3 className="text-base font-semibold text-text-primary">Three User Profiles, One Generic Onboarding</h3>
-              <div className="grid gap-3 sm:grid-cols-3">
-                {[
-                  { label: "Profile A", title: "The Digital Entrepreneur", age: "25–35", goal: "Generate income quickly with minimal upfront investment", friction: "Doesn't understand the difference between being a brand and being a dropshipper" },
-                  { label: "Profile B", title: "The Established Brand", age: "30–50", goal: "Expand distribution channels without growing the sales team", friction: "Catalog migration is complex, no support for moving existing inventory" },
-                  { label: "Profile C", title: "The Content Creator", age: "18–30", goal: "Monetize their community with products", friction: "Doesn't understand logistics operations, needs extreme simplicity" },
-                ].map((p) => (
-                  <div key={p.label} className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-4 text-sm">
-                    <span className="w-fit rounded-full px-2 py-0.5 text-xs font-semibold text-white" style={{ background: "#ff6f00" }}>{p.label}</span>
-                    <p className="font-medium text-text-primary">{p.title}</p>
-                    <p className="text-xs text-text-muted">{p.age} years old</p>
-                    <p className="text-text-secondary"><span className="font-medium text-text-primary">Goal:</span> {p.goal}</p>
-                    <p className="text-text-secondary"><span className="font-medium text-text-primary">Friction:</span> {p.friction}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <h3 className="text-base font-semibold text-text-primary">Competitive Benchmark</h3>
-              <Table
-                headers={["Platform", "Guided Onboarding", "Time to First Value", "Education", "Personalization"]}
-                rows={[
-                  ["Shopify", "⭐⭐⭐⭐⭐", "< 30 min", "⭐⭐⭐⭐⭐", "⭐⭐⭐⭐"],
-                  ["Tiendanube", "⭐⭐⭐⭐", "< 45 min", "⭐⭐⭐⭐", "⭐⭐⭐"],
-                  ["Mercado Shops", "⭐⭐⭐", "< 1 hour", "⭐⭐⭐", "⭐⭐⭐"],
-                  ["WooCommerce", "⭐⭐", "> 2 hours", "⭐⭐", "⭐⭐"],
-                  ["Dropi (current)", "⭐⭐", "> 2 hours", "⭐⭐", "⭐"],
-                ]}
+              <StatBlock
+                stat="3×"
+                description="more likely to be retained: users who experience core value within 5 to 15 minutes vs. those who wait more than 30 minutes."
+                source="Amplitude, via SaaSFactor"
               />
-              <p className="text-sm leading-relaxed text-text-secondary">
-                <strong className="text-text-primary">Dropi&apos;s unique position:</strong> No competitor offers a fully integrated ecosystem where uploading a product means immediate visibility to an active network of dropshippers. This differentiator exists in the product. It simply isn&apos;t communicated during onboarding at all.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <h3 className="text-base font-semibold text-text-primary">The Current Emotional Arc</h3>
-              <div className="flex flex-wrap items-center gap-2 rounded-xl border border-border bg-surface p-5">
-                {[
-                  ["😊", "Curious"],
-                  ["😐", "Neutral"],
-                  ["😕", "Confused"],
-                  ["😤", "Frustrated"],
-                  ["😔", "Exhausted"],
-                  ["😞", "Abandons"],
-                ].map(([emoji, label], i, arr) => (
-                  <div key={label} className="flex items-center gap-2">
-                    <div className="flex flex-col items-center gap-1 text-sm">
-                      <span className="text-xl">{emoji}</span>
-                      <span className="text-xs text-text-muted">{label}</span>
-                    </div>
-                    {i < arr.length - 1 && <span className="text-text-muted">→</span>}
-                  </div>
-                ))}
-              </div>
-              <p className="text-sm leading-relaxed text-text-secondary">
-                The platform forces users to confront six sequential steps — including complex logistics configuration — before they&apos;ve understood why any of it matters. The emotional cost arrives before the value does.
-              </p>
+              <StatBlock
+                stat="3×"
+                description="more abandonment in products with a time to first value over 30 minutes vs. those that deliver it in under 10 minutes."
+                source="Reforge, via SaaSFactor"
+              />
             </div>
             <Divider />
           </motion.section>
 
-          {/* 04 · Insights */}
+          {/* What the platforms that actually activate users do well */}
           <motion.section variants={fade} className="flex flex-col gap-6">
             <div>
-              <SectionNum n="04" />
-              <SectionTitle>The Six Insights That Shaped the Strategy</SectionTitle>
-              <p className="text-sm leading-relaxed text-text-secondary">
-                Every design decision in this project traces back to one of these six insights. They&apos;re not observations — they&apos;re strategic anchors.
-              </p>
+              <SectionTitle>What the platforms that actually activate users do well</SectionTitle>
             </div>
-            <div className="grid gap-4 sm:grid-cols-2">
-              <InsightCard n="I1" title="The 'Aha Moment' has never been defined or designed" insight="Brands that activate do so despite the process, not because of it. Without a defined moment of value, any UX improvement is blind optimization." implication="Define the aha moment as: the first dropshipper requesting to sell your product — make it happen within 24 hours of registration." />
-              <InsightCard n="I2" title="Friction is more perceived than real" insight="The configuration process isn't objectively harder than competitors, but it feels harder because no narrative connects the steps to an outcome." implication="Reframe every onboarding step as a concrete benefit, not a technical requirement." />
-              <InsightCard n="I3" title="Three profiles need three onboarding paths" insight="A digital entrepreneur seeking their first income has completely different motivations than an established brand seeking a new distribution channel." implication="Divergent onboarding from the first question: profile type determines narrative, success metrics, and quick wins." />
-              <InsightCard n="I4" title="The ecosystem differentiator is never communicated" insight="No competitor offers what Dropi offers. This should be the narrative center of onboarding, powered by real network data visible from the first login." implication="Show how many active dropshippers would see the brand's product — live, from the onboarding screen." />
-              <InsightCard n="I5" title="The post-registration window is completely wasted" insight="The first 7 days after registration are critical. Platforms with 50%+ activation rates send up to 12 personalized communications in this window." implication="Design a 7-day activation sequence: email + push + WhatsApp, personalized by profile." />
-              <InsightCard n="I6" title="Quick wins are the most effective activation catalyst" insight="Platforms with activation rates above 50% share one pattern: a first small-but-meaningful success within 15 minutes." implication="Build a simplified 'first product in 5 minutes' flow with immediate visibility status in the dropshipper network." />
-            </div>
+            <Table
+              headers={["", "Shopify", "Tiendanube", "Dropi (current)"]}
+              rows={[
+                ["Steps before first value", "2", "3", "6"],
+                ["Does step 1 generate visible value?", "✅", "✅", "❌"],
+                ["Segmented post-registration communication?", "✅", "✅", "⚠️"],
+                ["Quick win in under 15 min?", "✅", "⚠️", "❌"],
+                ["Does the aha moment happen in the first session?", "✅", "✅", "❌"],
+              ]}
+            />
             <Divider />
           </motion.section>
 
-          {/* 05 · Strategy */}
-          <motion.section variants={fade} className="flex flex-col gap-8">
-            <div>
-              <SectionNum n="05" />
-              <SectionTitle>The Strategy</SectionTitle>
-            </div>
-
+          {/* The 4 moments intro */}
+          <motion.section variants={fade} className="flex flex-col gap-6">
             <Callout>
-              <strong>The central reframe: Activation ≠ full configuration.</strong>
+              <strong>Activation is not configuration.</strong> It&apos;s giving the user a reason to stay before asking them to complete everything.
               <br /><br />
-              The existing flow assumed a brand needed to be fully configured before they were &quot;active.&quot; The new definition: <strong>active means ready to receive value, not ready to operate everything.</strong>
-              <br /><br />
-              With that principle, the activation journey splits into three temporally distinct moments, each triggered by a real business event.
+              That&apos;s why I split this strategy into <strong>4 moments</strong>, each activated with precise timing, responding to a real business event, not an arbitrary calendar.
             </Callout>
-
-            <div className="flex flex-col gap-4">
-              <MomentCard number="1" label="Minimum Viable Activation">
-                <p className="mb-3">The user sees only two steps. Steps 3–6 don&apos;t exist yet on their screen — simply not rendered. This eliminates the anxiety of a long list.</p>
-                <ul className="flex flex-col gap-2">
-                  <li><strong className="text-text-primary">Step 1 — Create your warehouse.</strong> Same data, completely different frame: &quot;Your dispatch point — where your products will ship from.&quot; Carrier guide format fields are moved out entirely.</li>
-                  <li className="mt-2"><strong className="text-text-primary">Step 2 — Upload your first product.</strong> Required fields only: name, photo, price, suggested price, category, description. A form completable in under 5 minutes.</li>
-                </ul>
-              </MomentCard>
-
-              <MomentCard number="2" label="The Aha Moment">
-                <p className="mb-3">Immediately after saving the first product, a real-data message appears inline on the dashboard:</p>
-                <div className="rounded-lg border p-4 text-sm italic" style={{ borderColor: "rgba(255,111,0,0.3)", background: "rgba(255,111,0,0.05)", color: "#ff6f00" }}>
-                  &quot;Your product is now visible to Dropi&apos;s dropshippers. Right now, there are 1,847 active dropshippers selling products in the Sportswear category.&quot;
-                </div>
-                <p className="mt-3">That number is not decorative. It&apos;s the first moment the user viscerally understands why they&apos;re here. The checklist shows 100% and labels it &quot;Your account is active.&quot;</p>
-              </MomentCard>
-
-              <MomentCard number="3" label="Operational Activation (Triggered by First Order)">
-                <p className="mb-3">When the first order arrives, steps 3 and 4 appear for the first time. The user isn&apos;t completing them in the abstract — they&apos;re completing them to dispatch a real order that already exists.</p>
-                <ul className="flex flex-col gap-1">
-                  <li><strong className="text-text-primary">Step 3</strong> — Configure dispatch and pickup: carrier selection makes sense now because there are packages to pick up.</li>
-                  <li><strong className="text-text-primary">Step 4</strong> — Manage your orders: has context now because there&apos;s a customer waiting.</li>
-                  <li><strong className="text-text-primary">Step 5</strong> — Receive your earnings: activated after the first confirmed dispatch.</li>
-                </ul>
-              </MomentCard>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <h3 className="text-base font-semibold text-text-primary">Dropi Academy — A Parallel Program, Not a Checklist Item</h3>
-              <p className="text-sm leading-relaxed text-text-secondary">
-                In the current experience, &quot;Register for Dropi Academy&quot; is step 6 of the activation checklist, framing education as a requirement. The redesign removes it from the checklist and converts it into an autonomous email marketing program.
-              </p>
-              <div className="grid gap-2 sm:grid-cols-4">
-                {[
-                  ["Day 0", "Welcome email — what Dropi Academy is"],
-                  ["Day 1", "First module based on the product category uploaded"],
-                  ["Day 4", "Reminder if email wasn't opened (different subject, shorter)"],
-                  ["Completion", "Featured placement in dropshipper catalog + early carrier access"],
-                ].map(([day, desc]) => (
-                  <div key={day} className="rounded-lg border border-border bg-surface p-3 text-xs">
-                    <p className="mb-1 font-semibold" style={{ color: "#ff6f00" }}>{day}</p>
-                    <p className="text-text-secondary">{desc}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3">
-              <h3 className="text-base font-semibold text-text-primary">The 7-Day Abandonment Recovery Sequence</h3>
-              <div className="flex flex-col gap-3">
-                {[
-                  { time: "T+2 hours", channel: "WhatsApp", tone: "Direct", message: "\"Hi [name], you're one step away from activating your brand on Dropi. It'll take less than 5 minutes. Continue here →\"" },
-                  { time: "T+24 hours", channel: "Email", tone: "Context-driven", message: "How many dropshippers searched for products in their category that day. Real urgency, not manufactured." },
-                  { time: "T+3 days", channel: "WhatsApp", tone: "Invitation", message: "\"Do you have questions about setting up your first warehouse? Our team can help you in 10 minutes.\"" },
-                  { time: "T+7 days+", channel: "Email (nurture)", tone: "Social proof", message: "Biweekly emails featuring success stories from similar brands in the Dropi ecosystem." },
-                ].map((item) => (
-                  <div key={item.time} className="flex gap-4 rounded-lg border border-border bg-surface p-4">
-                    <div className="w-24 shrink-0">
-                      <p className="text-xs font-semibold" style={{ color: "#ff6f00" }}>{item.time}</p>
-                      <p className="mt-1 text-xs text-text-muted">{item.channel}</p>
-                    </div>
-                    <div className="text-sm">
-                      <p className="mb-1 font-medium text-text-primary">{item.tone}</p>
-                      <p className="text-text-secondary">{item.message}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
             <Divider />
           </motion.section>
 
-          {/* 06 · Live Demos */}
+          {/* Moment 1 */}
+          <motion.section variants={fade} className="flex flex-col gap-6">
+            <MomentHeader
+              number="1"
+              label="Personalized onboarding"
+              question="How do I give the onboarding the brand's personality, so it doesn't feel like a generic sequence?"
+            />
+            <BeforeAfter
+              before="Generic modal. No context, no visible consequence."
+              after="3 questions + real-time preview. The brand comes to life before the first form."
+            />
+            <Carousel
+              images={[
+                "/dropi/momento1/m1.jpg",
+                "/dropi/momento1/m2.jpg",
+                "/dropi/momento1/m3.jgp.png",
+                "/dropi/momento1/m4.jpg",
+                "/dropi/momento1/m5.jpg",
+              ]}
+            />
+            <Divider />
+          </motion.section>
+
+          {/* Moment 2 */}
+          <motion.section variants={fade} className="flex flex-col gap-6">
+            <MomentHeader
+              number="2"
+              label="Warehouse + product"
+              question="What are the minimum viable steps to give the user something in return as quickly as possible?"
+            />
+            <div className="rounded-lg border border-border bg-surface p-4 text-sm text-text-secondary">
+              <span className="font-medium text-text-primary">Product decision: </span>
+              Include Warehouse + Product <strong>inside</strong> the initial onboarding. The user goes from 6 isolated steps to 2 integrated steps before their first perceived value.
+            </div>
+            <BeforeAfter
+              before="Warehouse and product lived in separate tabs, after onboarding, with no guidance."
+              after="Activation no longer starts after registration. It's part of it."
+            />
+            <Carousel
+              images={[
+                "/dropi/momento2/m2.1.jpg",
+                "/dropi/momento2/m2.2.jpg",
+                "/dropi/momento2/m2.3.jpg",
+                "/dropi/momento2/m2.4.jpg",
+              ]}
+            />
+            <Divider />
+          </motion.section>
+
+          {/* Moment 3 */}
+          <motion.section variants={fade} className="flex flex-col gap-6">
+            <MomentHeader
+              number="3"
+              label="Aha moment"
+              question="When does the user first understand that Dropi is a real network, not just another platform?"
+            />
+            <div className="rounded-lg border border-border bg-surface p-4 text-sm text-text-secondary">
+              <span className="font-medium text-text-primary">Product decision: </span>
+              This moment is not decorative. It&apos;s the emotional anchor that justifies all the effort that came before, and reduces post-configuration abandonment.
+            </div>
+            <BeforeAfter
+              before="The user completes 6 steps and receives no signal that anything changed. They don't know if anyone can see their products or whether the effort was worth it."
+              after="Immediately after publishing their first product, they see in real time how many active dropshippers are in their category."
+            />
+            <img
+              src="/dropi/momento3/m3.jpg"
+              alt="Aha moment screen"
+              className="w-full rounded-xl border border-border"
+            />
+            <Divider />
+          </motion.section>
+
+          {/* Moment 4 — In-platform */}
+          <motion.section variants={fade} className="flex flex-col gap-6">
+            <MomentHeader
+              number="4"
+              label="Re-engagement · In-platform triggers"
+              question="When is the right moment to ask for what's still missing?"
+            />
+            <div className="rounded-lg border border-border bg-surface p-4 text-sm text-text-secondary">
+              <span className="font-medium text-text-primary">Product decision: </span>
+              The remaining steps don&apos;t appear until the user has a real reason to complete them.
+            </div>
+            <Table
+              headers={["Trigger", "Unlocks"]}
+              rows={[
+                ["First order received", "Manage order and pickup"],
+                ["First dispatch confirmed", "Bank account validation (earnings waiting)"],
+              ]}
+            />
+            <img
+              src="/dropi/momento4/m4.jpg"
+              alt="First order notification"
+              className="w-full rounded-xl border border-border"
+            />
+            <Divider />
+          </motion.section>
+
+          {/* Moment 4 — Email */}
+          <motion.section variants={fade} className="flex flex-col gap-6">
+            <div>
+              <div className="mb-3 flex items-center gap-3">
+                <span className="rounded-full px-3 py-1 text-xs font-bold text-white" style={{ background: "#ff6f00" }}>
+                  Moment 4
+                </span>
+                <span className="text-base font-semibold text-text-primary">Re-engagement · Email marketing</span>
+              </div>
+              <p className="text-sm text-text-secondary">
+                <span className="font-medium text-text-primary">Goal: </span>Run a parallel email series that doesn&apos;t feel like spam.
+              </p>
+              <p className="mt-1 text-sm text-text-secondary">
+                <span className="font-medium text-text-primary">How: </span>7 emails with triggers based on real user behavior, not an arbitrary calendar. Each email responds to a specific action or inaction by the user.
+              </p>
+            </div>
+            <Table
+              headers={["Email", "Trigger", "Timing"]}
+              rows={[
+                ["E1: Welcome", "Registration completed", "Day 0"],
+                ["E2: Onboarding abandoned", "Onboarding incomplete", "+2 hours"],
+                ["E3: Market opportunity", "No product published", "Day 1"],
+                ["E4: Product visible", "First product published", "Event"],
+                ["E5: Your first order!", "First order received", "Event (push + WhatsApp + email)"],
+                ["E6: Success story", "Active brand with no second order", "Day 7"],
+                ["E7: Human support", "No sustained activity", "Day 15"],
+              ]}
+            />
+            <Divider />
+          </motion.section>
+
+          {/* Prototypes */}
           <motion.section variants={fade} className="flex flex-col gap-10">
             <div>
-              <SectionNum n="06" />
-              <SectionTitle>Prototipos Interactivos</SectionTitle>
-              <p className="text-sm leading-relaxed text-text-secondary">
-                Prototipos funcionales en HTML — no son mockups estáticos. Explora el flujo completo de activación y el set de emails de re-engagement.
+              <SectionTitle>Interactive prototypes</SectionTitle>
+              <p className="mt-2 text-sm leading-relaxed text-text-secondary">
+                Functional HTML prototypes, not static mockups. Each demo is interactive and runs directly in the browser.
               </p>
             </div>
 
             <DemoBlock
-              title="Flujo de Activación de Marca"
-              description="Prototipo completo con 9 pantallas: selección de perfil, configuración de bodega, subida del primer producto, el momento aha y el panel de primeros pedidos."
+              title="Brand Activation Flow"
+              description="Complete prototype with 9 screens: profile selection, warehouse setup, first product upload, the aha moment, and the first order dashboard."
               src="/dropi/Dropi%20Activaci%C3%B3n.html"
               height={750}
             />
 
             <DemoBlock
-              title="Secuencia de Emails — 7 emails de activación"
-              description="Set completo de email marketing para la secuencia de re-engagement post-registro: desde el email de bienvenida hasta la recuperación de usuarios que abandonaron el onboarding."
+              title="Email Sequence: 7 activation emails"
+              description="Complete email marketing set for the post-registration re-engagement sequence: from the welcome email to recovering users who abandoned onboarding."
               src="/dropi/Dropi%20Email%20Set.html"
               height={750}
             />
@@ -525,106 +592,128 @@ export default function DropiPage() {
             <Divider />
           </motion.section>
 
-          {/* 07 · Decisions */}
+          {/* Impact Measurement */}
           <motion.section variants={fade} className="flex flex-col gap-6">
             <div>
-              <SectionNum n="07" />
-              <SectionTitle>Decisions Made Consciously</SectionTitle>
-              <p className="text-sm leading-relaxed text-text-secondary">
-                Great design documents aren&apos;t just about what was built. They&apos;re about what was considered and rejected, and why the chosen path is defensible.
-              </p>
+              <SectionTitle>Impact Measurement Framework</SectionTitle>
+              <div className="mt-3 inline-flex rounded-lg px-4 py-2 text-sm font-semibold text-white" style={{ background: "#ff6f00" }}>
+                7-day activation: 20% today → 37.5% target in 6 months
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <h3 className="text-sm font-semibold text-text-primary">Activation timeline</h3>
+              <Table
+                headers={["Milestone", "Moment", "Key metric"]}
+                rows={[
+                  ["5 min", "Onboarding", "Completion rate >80% · Time to complete <5 min"],
+                  ["15 min", "Warehouse + product", "Time to first value <15 min · % of users who publish a product"],
+                  ["24 h", "Aha moment", "CTA click rate on the panel · % of users who return within 48h"],
+                  ["7 days", "Re-engagement", "Email open rate · CTA click rate · Conversion rate"],
+                ]}
+              />
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <h3 className="text-sm font-semibold text-text-primary">Funnel comparison: current vs. projected</h3>
+              <Table
+                headers={["Stage", "Current funnel", "Projected funnel"]}
+                rows={[
+                  ["Registration", "100%", "100%"],
+                  ["Onboarding complete", "~65%", "~90%"],
+                  ["First product published", "~40%", "~75%"],
+                  ["Aha moment", "~25%", "~55%"],
+                  ["Activation at 7 days", "<20%", "~37.5%"],
+                ]}
+              />
+            </div>
+            <Divider />
+          </motion.section>
+
+          {/* Project Leadership Plan */}
+          <motion.section variants={fade} className="flex flex-col gap-6">
+            <div>
+              <SectionTitle>Project Leadership Plan</SectionTitle>
+              <SectionSubtitle>3-month roadmap</SectionSubtitle>
             </div>
             <div className="flex flex-col gap-4">
               {[
                 {
-                  decision: "Remove carriers from initial onboarding",
-                  alternative: "Simplify the Guide Format section but keep it in the form.",
-                  why: "A simplified carrier form is still a carrier form. It still requires the user to know which carriers they want before they have any orders, any logistics experience, or any reason to care. The cognitive cost isn't in the number of fields — it's in the concept.",
+                  phase: "Phase 1",
+                  label: "Foundations & quick win",
+                  goal: "Validate hypotheses with minimal effort. Understand the user before touching a pixel.",
+                  deliverables: "Research validation · Tracking plan · Prototype M1 · Prototype M2 · Usability tests",
+                  moments: "M1 + M2",
+                  teams: ["PM", "Product", "Dev", "Research", "Design"],
+                  kpi: "Validated hypothesis + tracking live",
                 },
                 {
-                  decision: "Only 2 steps visible initially (not 6 with lock icons)",
-                  alternative: "Show all 6 steps, lock steps 3–6 with a visual lock and tooltip.",
-                  why: "Locked steps are still visible steps. They still communicate \"you have 6 things to do.\" The anxiety they create isn't reduced by locking them — it's just delayed.",
+                  phase: "Phase 2",
+                  label: "Integrated system",
+                  goal: "Connect the full flow and start A/B Test against the current experience.",
+                  deliverables: "Prototype M3 · Integration M1+M2+M3 · Real-time metrics dashboard · Front-end handoff · Email design",
+                  moments: "M3",
+                  teams: ["PM", "Product", "Front", "Back", "QA", "Marketing", "Design"],
+                  kpi: "New flow in production + A/B Test running",
                 },
                 {
-                  decision: "Aha moment as inline state, not a modal popup",
-                  alternative: "A full-screen celebration modal after saving the first product.",
-                  why: "Modals interrupt. They're dismissed reflexively by users used to popups. The aha moment needs to feel like a natural progression of the dashboard, not an interruption.",
+                  phase: "Phase 3",
+                  label: "Re-engagement & iteration",
+                  goal: "Close the system with event-based triggers and validate test results.",
+                  deliverables: "Moment 4 (emails + push + WhatsApp) · Event triggers · A/B test analysis · Iteration by findings · Documentation",
+                  moments: "M4",
+                  teams: ["Product", "Marketing", "Back", "Research"],
+                  kpi: "Activation measured vs. baseline + iteration plan",
                 },
-                {
-                  decision: "WhatsApp as primary re-engagement channel, not email",
-                  alternative: "Email-first recovery sequence.",
-                  why: "In Colombia and broader LATAM, WhatsApp open rates are consistently 5–10× higher than email. For a time-sensitive re-engagement at T+2 hours, the difference between 90% and 25% open rate is the difference between recovering 15% of lost users or recovering 3%.",
-                },
-              ].map((d) => (
-                <div key={d.decision} className="rounded-xl border border-border bg-surface p-5">
-                  <p className="mb-2 font-semibold text-text-primary">{d.decision}</p>
-                  <p className="mb-3 text-xs text-text-muted"><span className="font-medium">Alternative considered:</span> {d.alternative}</p>
-                  <p className="text-sm leading-relaxed text-text-secondary"><span className="font-medium text-text-primary">Why rejected:</span> {d.why}</p>
+              ].map((p) => (
+                <div key={p.phase} className="rounded-xl border border-border bg-surface p-5">
+                  <div className="mb-3 flex items-center gap-3">
+                    <span className="rounded-full px-2.5 py-0.5 text-xs font-bold text-white" style={{ background: "#ff6f00" }}>{p.phase}</span>
+                    <span className="text-sm font-semibold text-text-primary">{p.label}</span>
+                  </div>
+                  <div className="grid gap-3 text-sm sm:grid-cols-2">
+                    <div>
+                      <p className="mb-1 text-xs font-medium uppercase tracking-wider text-text-muted">Goal</p>
+                      <p className="text-text-secondary">{p.goal}</p>
+                    </div>
+                    <div>
+                      <p className="mb-1 text-xs font-medium uppercase tracking-wider text-text-muted">Deliverables</p>
+                      <p className="text-text-secondary">{p.deliverables}</p>
+                    </div>
+                    <div>
+                      <p className="mb-1 text-xs font-medium uppercase tracking-wider text-text-muted">Moments</p>
+                      <p className="text-text-secondary">{p.moments}</p>
+                    </div>
+                    <div>
+                      <p className="mb-1 text-xs font-medium uppercase tracking-wider text-text-muted">Teams</p>
+                      <div className="flex flex-wrap gap-1">
+                        {p.teams.map((t) => (
+                          <span key={t} className="rounded px-2 py-0.5 text-xs text-white" style={{ background: "rgba(255,111,0,0.7)" }}>{t}</span>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="sm:col-span-2">
+                      <p className="mb-1 text-xs font-medium uppercase tracking-wider text-text-muted">KPI</p>
+                      <p className="text-text-secondary">{p.kpi}</p>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
             <Divider />
           </motion.section>
 
-          {/* 08 · Measurement */}
+          {/* What this demonstrates */}
           <motion.section variants={fade} className="flex flex-col gap-6">
             <div>
-              <SectionNum n="08" />
-              <SectionTitle>Hypothesis & Measurement Framework</SectionTitle>
-              <p className="text-sm leading-relaxed text-text-secondary">
-                Five testable hypotheses, each with a specific metric and validation method. These aren&apos;t projections — they&apos;re commitments to measurement.
-              </p>
-            </div>
-            <Table
-              headers={["#", "Hypothesis", "Metric", "Target", "Priority"]}
-              rows={[
-                ["H1", "Redesigned 5-min onboarding → activation rate rises from 20% to 40% in 90 days", "Funnel completion rate + % brands with ≥1 product in first 24h", "40% activation", "🔴 High"],
-                ["H2", "Personalized onboarding by profile → time to first value drops 50%", "Time-to-first-value per segment, pre/post", "−50% TtFV", "🔴 High"],
-                ["H3", "Showing live dropshipper count → higher completion rate", "A/B: completion rate with/without network metric", "+15% completion", "🟠 Medium"],
-                ["H4", "7-day email/WhatsApp sequence → recover 15% of abandoned users", "Re-engagement rate: users who resume after sequence", "15% recovery", "🟠 Medium"],
-                ["H5", "Dropi Academy as email program → lower early churn", "NPS at 30 days + churn rate during configuration stage", "NPS +20 pts", "🟡 Medium-low"],
-              ]}
-            />
-            <Callout>
-              <strong>The North Star:</strong> Move brand activation from &lt;20% to 45–55% in 6 months without changes to the core product architecture or business model.
-            </Callout>
-            <Divider />
-          </motion.section>
-
-          {/* 09 · Reflections */}
-          <motion.section variants={fade} className="flex flex-col gap-6">
-            <div>
-              <SectionNum n="09" />
-              <SectionTitle>What I&apos;d Do Differently</SectionTitle>
-            </div>
-            <div className="flex flex-col gap-4">
-              {[
-                { title: "Run at least 3 user interviews before finalizing the strategy", body: "The research was built entirely from secondary sources. That's valuable, but it can't replace 30 minutes with a real entrepreneur who tried to register and stopped. One conversation often surfaces a friction point that no amount of analytical reasoning predicts." },
-                { title: "Validate the aha moment concept with real data before designing the screen", body: "The hypothesis that seeing how many dropshippers are in your category is motivating enough to drive completion is well-reasoned but unvalidated. An unmoderated usability test with 5 users would tell us quickly whether the real number creates motivation or skepticism." },
-                { title: "Map the 'Established Brand' (Profile B) activation journey separately", body: "This document focused primarily on Profile A because it represents the highest-volume segment. But Profile B — a brand migrating an existing catalog of 50+ products — has fundamentally different needs. The 'first product in 5 minutes' flow doesn't serve them." },
-              ].map((r) => (
-                <div key={r.title} className="rounded-xl border border-border bg-surface p-5">
-                  <p className="mb-2 font-semibold text-text-primary">{r.title}</p>
-                  <p className="text-sm leading-relaxed text-text-secondary">{r.body}</p>
-                </div>
-              ))}
-            </div>
-            <Divider />
-          </motion.section>
-
-          {/* 10 · What this demonstrates */}
-          <motion.section variants={fade} className="flex flex-col gap-6">
-            <div>
-              <SectionNum n="10" />
-              <SectionTitle>What This Project Demonstrates</SectionTitle>
+              <SectionTitle>What this project demonstrates</SectionTitle>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               {[
-                { title: "Research before pixels", body: "The 6 insights and 5 hypotheses came before any screen was designed. The screens are a consequence of the analysis, not a parallel track." },
-                { title: "Strategy from constraints", body: "The constraint of not changing backend logic forced a more creative solution: reframe the experience, not the product." },
-                { title: "Anticipating the hard questions", body: "The 'pending order' state isn't a UX detail. It's an operational decision. Raising it in the design brief signals thinking past the happy path." },
-                { title: "Designing for a business outcome", body: "The goal was never 'redesign the onboarding.' The goal was to move a number: activation rate from 20% to 45%. Every decision traces back to that number." },
+                { title: "Research before pixels", body: "The 5 Whys findings and competitive benchmarks defined the structure of the 4 moments. The screens are a consequence of the analysis, not the other way around." },
+                { title: "Strategy from constraints", body: "Not touching business logic or backend infrastructure required a more creative solution: separate activation into real events instead of inventing new features." },
+                { title: "Anticipating the hard questions", body: "The 'pending logistics configuration' state when a first order arrives without a carrier set up isn't a UX detail. It's an operational decision that requires alignment with engineering and business stakeholders." },
+                { title: "Designing for a number", body: "The goal was never 'redesign the onboarding.' It was to move activation from 20% to 37.5%. Every decision traces back to that number." },
               ].map((item) => (
                 <div key={item.title} className="flex flex-col gap-2 rounded-xl border border-border bg-surface p-5">
                   <p className="font-semibold text-text-primary">{item.title}</p>
@@ -636,7 +725,7 @@ export default function DropiPage() {
 
           {/* Footer */}
           <motion.footer variants={fade} className="flex flex-col items-start gap-2 border-t border-border pt-10 text-sm text-text-muted">
-            <p className="font-medium text-text-secondary">Nicolás Vargas — Senior Product Designer</p>
+            <p className="font-medium text-text-secondary">Nicolás Vargas Galindo, Senior Product Designer</p>
             <p>Cali, Colombia · April 2026</p>
           </motion.footer>
 

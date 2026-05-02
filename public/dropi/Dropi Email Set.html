@@ -1002,6 +1002,12 @@ const PRIORIDAD_DOT = {
 
 function App() {
   const [selected, setSelected] = React.useState(0);
+  const mainRef = React.useRef(null);
+
+  React.useEffect(() => {
+    if (mainRef.current) mainRef.current.scrollTop = 0;
+  }, [selected]);
+
   const EmailBody = EMAIL_BODIES[selected];
   const email = EMAILS[selected];
 
@@ -1065,7 +1071,7 @@ function App() {
       </div>
 
       {/* Main preview */}
-      <div style={{ flex: 1, overflowY: 'auto', background: '#F3F4F6' }}>
+      <div ref={mainRef} style={{ flex: 1, overflowY: 'auto', background: '#F3F4F6' }}>
         <EmailBody />
       </div>
     </div>

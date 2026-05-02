@@ -1912,6 +1912,13 @@ function goTo(id) {
     if (cta) { cta.disabled = false; cta.innerHTML = 'Validar y activar pagos <i class="ri-shield-check-line"></i>'; }
   }
   window.scrollTo(0, 0);
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+  if (screen) {
+    screen.querySelectorAll('.split-left, .home-body, .side-panel-body, [style*="overflow-y"]').forEach(function(el) {
+      el.scrollTop = 0;
+    });
+  }
 }
 
 function selectModal(el) {
