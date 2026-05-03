@@ -1,7 +1,11 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion, type Variants } from "framer-motion";
 import Link from "next/link";
+
+const KANUT_ACCESS_STORAGE_KEY = "kanut-case-study-access";
+const KANUT_ACCESS_PASSWORD = "Kanut-project-2026";
 
 /* ─── Design token ───────────────────────────────────────────────────────── */
 
@@ -118,6 +122,88 @@ function BlueBox({ children }: { children: React.ReactNode }) {
   );
 }
 
+/** Section 01 — reference screens from discovery (public/kanut/01). */
+const SECTION_01_CAROUSEL_IMAGES = ["/kanut/01/01.png", "/kanut/01/02.png"];
+
+/** Pillar 3 — Formula Builder / automation screens (public/kanut/04). */
+const PILAR_3_CAROUSEL_IMAGES = [
+  "/kanut/04/pilar-3.jpg",
+  "/kanut/04/pilar-3.1.jpg",
+  "/kanut/04/pilar-3.2.jpg",
+  "/kanut/04/pilar-3.4.jpg",
+];
+
+function ImageCarousel({ images, interval = 4500 }: { images: string[]; interval?: number }) {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const prev = () => setIndex((i) => (i - 1 + images.length) % images.length);
+  const next = () => setIndex((i) => (i + 1) % images.length);
+
+  useEffect(() => {
+    if (paused || images.length <= 1) return;
+    const id = setInterval(() => setIndex((i) => (i + 1) % images.length), interval);
+    return () => clearInterval(id);
+  }, [paused, images.length, interval]);
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div
+        className="relative overflow-hidden rounded-xl border border-border bg-black"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
+        <img
+          src={images[index]}
+          alt={`Reference ${index + 1} of ${images.length}`}
+          className="w-full object-contain"
+          style={{ maxHeight: 520 }}
+        />
+        {images.length > 1 ? (
+          <>
+            <button
+              type="button"
+              onClick={prev}
+              className="absolute left-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-colors hover:bg-black/80"
+              aria-label="Previous image"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M15 18l-6-6 6-6" />
+              </svg>
+            </button>
+            <button
+              type="button"
+              onClick={next}
+              className="absolute right-3 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/60 text-white backdrop-blur-sm transition-colors hover:bg-black/80"
+              aria-label="Next image"
+            >
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M9 18l6-6-6-6" />
+              </svg>
+            </button>
+          </>
+        ) : null}
+      </div>
+      {images.length > 1 ? (
+        <div className="flex items-center justify-center gap-2">
+          {images.map((_, i) => (
+            <button
+              key={i}
+              type="button"
+              onClick={() => setIndex(i)}
+              className="h-1.5 shrink-0 rounded-[4px] transition-[width,background-color] duration-200"
+              style={{
+                width: i === index ? 20 : 6,
+                backgroundColor: i === index ? BLUE : "rgb(var(--text-secondary))",
+              }}
+              aria-label={`Go to image ${i + 1}`}
+            />
+          ))}
+        </div>
+      ) : null}
+    </div>
+  );
+}
+
 /* ─── Animations ─────────────────────────────────────────────────────────── */
 
 const fade: Variants = {
@@ -130,9 +216,120 @@ const stagger: Variants = {
   show: { transition: { staggerChildren: 0.1 } },
 };
 
+/* ─── Confidential access gate ───────────────────────────────────────────── */
+
+function KanutAccessModal({ onUnlock }: { onUnlock: () => void }) {
+  const [value, setValue] = useState("");
+  const [error, setError] = useState(false);
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const ok = value.trim() === KANUT_ACCESS_PASSWORD;
+    if (ok) {
+      try {
+        sessionStorage.setItem(KANUT_ACCESS_STORAGE_KEY, "1");
+      } catch {
+        /* private mode */
+      }
+      setError(false);
+      onUnlock();
+    } else {
+      setError(true);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-canvas/95 p-6 backdrop-blur-md">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
+        className="w-full max-w-md rounded-2xl border border-border bg-surface p-8 shadow-2xl"
+      >
+        <p
+          className="mb-2 text-xs font-semibold uppercase tracking-[0.2em] text-text-muted"
+          style={{ color: `${BLUE}cc` }}
+        >
+          Restricted access
+        </p>
+        <h1 className="text-2xl font-semibold leading-snug tracking-tight text-text-primary sm:text-[1.65rem]">
+          This project is password protected
+        </h1>
+        <p className="mt-4 text-sm leading-relaxed text-text-secondary">
+          Some parts of this case study are not public. If you were given a password, enter
+          it below to continue. If not, you can return to the portfolio anytime.
+        </p>
+
+        <form onSubmit={submit} className="mt-8 flex flex-col gap-4">
+          <label className="sr-only" htmlFor="kanut-access-pass">
+            Password
+          </label>
+          <input
+            id="kanut-access-pass"
+            type="password"
+            autoComplete="off"
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+              setError(false);
+            }}
+            placeholder="Password"
+            className="w-full rounded-lg border border-border bg-canvas px-4 py-3 text-sm text-text-primary placeholder:text-text-muted outline-none transition-colors focus:border-[#2872f8] focus:ring-2 focus:ring-[#2872f8]/25"
+          />
+          {error ? (
+            <p className="text-sm text-red-400" role="alert">
+              Incorrect password. Please try again or go back to the portfolio.
+            </p>
+          ) : null}
+          <button
+            type="submit"
+            className="rounded-lg px-4 py-3 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+            style={{ background: BLUE }}
+          >
+            Continue
+          </button>
+        </form>
+
+        <Link
+          href="/"
+          className="mt-6 inline-flex text-sm text-text-muted transition-colors hover:text-text-secondary"
+        >
+          ← Back to portfolio
+        </Link>
+      </motion.div>
+    </div>
+  );
+}
+
 /* ─── Page ───────────────────────────────────────────────────────────────── */
 
 export default function KanutPage() {
+  const [access, setAccess] = useState<"checking" | "locked" | "unlocked">("checking");
+
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem(KANUT_ACCESS_STORAGE_KEY) === "1") {
+        setAccess("unlocked");
+        return;
+      }
+    } catch {
+      /* ignore */
+    }
+    setAccess("locked");
+  }, []);
+
+  if (access === "checking") {
+    return (
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-canvas">
+        <p className="text-sm text-text-muted">Loading…</p>
+      </div>
+    );
+  }
+
+  if (access === "locked") {
+    return <KanutAccessModal onUnlock={() => setAccess("unlocked")} />;
+  }
+
   return (
     <main className="min-h-screen">
 
@@ -291,6 +488,7 @@ export default function KanutPage() {
                 something different.
               </p>
             </div>
+            <ImageCarousel images={SECTION_01_CAROUSEL_IMAGES} interval={4500} />
             <div className="flex flex-col gap-4 rounded-xl border border-border bg-surface p-5">
               <p className="text-xs font-semibold uppercase tracking-wider text-text-muted">
                 From research — Carlos Bustamante, Kanut power user
@@ -421,6 +619,11 @@ export default function KanutPage() {
                 </p>
               </div>
             </div>
+            <img
+              src="/kanut/03/information-arquitecture.png"
+              alt="Information architecture: Workspace and Modules axes, with the shared template inside each module."
+              className="w-full rounded-xl border border-border bg-surface object-contain"
+            />
             <Callout>
               <strong>The repetition is the strategy.</strong> Once an operator
               learns the pattern of one module, they&apos;ve learned all of them.
@@ -452,6 +655,11 @@ export default function KanutPage() {
                 ends, no irrelevant menus, no learned-helplessness from a system
                 that&apos;s louder than the work.
               </p>
+              <img
+                src="/kanut/04/pilar-1.png"
+                alt="Pillar 1 — configurable navigation sidebar adapting to the operator's modules and layout."
+                className="w-full rounded-xl border border-border bg-surface object-contain"
+              />
               <div className="grid gap-3 sm:grid-cols-3">
                 {(
                   [
@@ -498,6 +706,11 @@ export default function KanutPage() {
                 show &ldquo;everything.&rdquo; Its job is to show what{" "}
                 <em>this specific operator</em> needs to see this morning.
               </p>
+              <img
+                src="/kanut/04/pilar-2.jpg"
+                alt="Pillar 2 — personalized operator dashboard with shortcuts, alerts, and composable blocks."
+                className="w-full rounded-xl border border-border bg-surface object-contain"
+              />
               <Table
                 headers={["Feature", "What it does"]}
                 rows={[
@@ -543,6 +756,7 @@ export default function KanutPage() {
                 automation. The risk: making it accessible without making it
                 dumb. The Formula Builder has three layers:
               </p>
+              <ImageCarousel images={PILAR_3_CAROUSEL_IMAGES} interval={4500} />
               <div className="flex flex-col gap-3">
                 <div className="rounded-xl border border-border bg-surface p-5">
                   <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-text-muted">
